@@ -20,9 +20,9 @@ repositories {
 }
 
 dependencies {
-    api("com.google.protobuf:protobuf-java:4.28.3")
-    api("io.grpc:grpc-stub:1.68.1")
-    api("io.grpc:grpc-protobuf:1.68.1")
+    api("com.google.protobuf:protobuf-java:4.36.0")
+    api("io.grpc:grpc-stub:1.83.1")
+    api("io.grpc:grpc-protobuf:1.83.1")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // grpc 生成代码的 @Generated
 }
 
