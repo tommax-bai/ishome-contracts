@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package ishome.common.v1;
+
+// 统一错误信封（技术架构 §6.1）：错误码 {DOMAIN}_{3位} + request_id。
+// 错误码注册表：本仓 errors/registry.md（只增不改）。
+// REST 侧（BFF OpenAPI）与 gRPC 侧共用同一码表与信封字段。
+message ErrorInfo {
+  // 形如 DESIGN_001；域段见 errors/registry.md
+  string code = 1;
+  // 人可读描述（面向调用方排障，不面向 C 端 UI 文案）
+  string message = 2;
+  // 全链路追踪用请求 id
+  string request_id = 3;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package ishome.common.v1;
+
+// 数据信任分轨（Agent 方案 §8.3；代码用词 fact_kind: dimensional / structural，规范文档 §4.2）。
+// 两类信息不混用同一信任规则：
+// - DIMENSIONAL 尺寸类：经确认闭环确认后视为真、即为设计依据；算术交叉校验兜可检出的矛盾；
+//   毫米级交付下单前量房升级为 measured。
+// - STRUCTURAL 结构类：永不采信口述（用户确认也不采信），只走"默认不动结构 / 硬证据"两条路径；
+//   结构数据的系统性正解是在户型库侧沉淀做准。
+enum FactKind {
+  FACT_KIND_UNSPECIFIED = 0;
+  // 尺寸类：房间长宽、层高、门窗大小等可测量数据
+  FACT_KIND_DIMENSIONAL = 1;
+  // 结构类：承重墙、梁柱、烟道、管井等结构信息
+  FACT_KIND_STRUCTURAL = 2;
+}

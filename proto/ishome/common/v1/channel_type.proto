@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package ishome.common.v1;
+
+// 渠道类型注册表（规范文档 §6.1 首批；权威表述见本仓 registries/channel_types.md，两处同步）。
+// 纪律：
+// - 只增不改；一种接入协议/平台一个标识；多主体/多环境靠 channel_instance（{type}:{instance-slug}）区分，不新造 type。
+// - `lark` 保留给飞书国际版（open.larksuite.com）——域名、账号体系不同，是另一个渠道，不是同一个。
+// - 微信生态禁止统称 wechat：公众号 / 小程序客服 / 企微是三套 API、三种身份体系。
+// - 触达级渠道（如 SMS）与会话级渠道同一套注册表，靠能力声明区分，不靠命名区分。
+// - 同一现实实体跨轴共用同一标识（R6）：身份轴（identity-svc 渠道绑定）复用本注册表。
+// - DB 按数据纪律存小写字符串（feishu / wecom / wechat_oa / wechat_mini / sms）。
+enum ChannelType {
+  CHANNEL_TYPE_UNSPECIFIED = 0;
+  // 飞书（open.feishu.cn），首发渠道
+  CHANNEL_TYPE_FEISHU = 1;
+  // 企业微信（待拍板⑤落地时启用）
+  CHANNEL_TYPE_WECOM = 2;
+  // 微信公众号（服务号）（待拍板⑤落地时启用）
+  CHANNEL_TYPE_WECHAT_OA = 3;
+  // 小程序客服消息（待拍板⑤落地时启用）
+  CHANNEL_TYPE_WECHAT_MINI = 4;
+  // 短信触达（触达级，只出不进）
+  CHANNEL_TYPE_SMS = 5;
+}

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package ishome.channel.v1;
+
+import "ishome/channel/v1/capability.proto";
+import "ishome/channel/v1/message.proto";
+import "ishome/common/v1/channel_type.proto";
+
+// channel-svc 对内 gRPC（v0 起步：发送 + 能力查询）。
+// 入站消息不走本服务 RPC 返回，channel-svc 翻译后调 design-svc 的 IngestMessage
+// 并发布 CloudEvents channel.message.received（见 events/registry.md）。
+service ChannelService {
+  // 出站发送（design-svc / 其他服务 → channel-svc → 渠道 adapter）。
+  // 渠道无主动发送窗口时由触达策略引擎决定排队或降级触达级渠道召回。
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  // 查询某接入实例的能力声明
+  rpc GetCapability(GetCapabilityRequest) returns (GetCapabilityResponse);
+}
+
+message SendMessageRequest {
+  // direction 必须为 OUTBOUND
+  UnifiedMessage message = 1;
+  // 幂等键：重试不重发（发进用户聊天线程的消息不可撤回，重复代价高）
+  string idempotency_key = 2;
+}
+
+message SendMessageResponse {
+  // 统一模型侧 message_id（ULID）
+  string message_id = 1;
+  // 渠道侧消息 id（方言值，仅存档用）
+  string channel_message_id = 2;
+}
+
+message GetCapabilityRequest {
+  ishome.common.v1.ChannelType channel_type = 1;
+  string channel_instance = 2;
+}
+
+message GetCapabilityResponse {
+  ChannelCapability capability = 1;
+}

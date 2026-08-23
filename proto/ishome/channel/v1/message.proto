@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package ishome.channel.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "ishome/common/v1/channel_type.proto";
+
+// 统一消息模型（channel.v1）——渠道可插拔的三要素之一（对齐文档 §6.3）。
+// 纪律：
+// - 字段只增不删。
+// - 五类内容（text / image / card / quick_reply / audio）是渠道间的最小公约数；
+//   禁止膨胀到单一渠道（如飞书富卡片的输入框、下拉）的能力上限，
+//   渠道专有能力一律经能力声明（capability.proto）启用，不进基础契约。
+// - 渠道方言只存在于 adapter 转换代码和 raw_payload 扩展字段里；
+//   字段名用抽象词（quick_reply / card），不用渠道方言（"消息卡片"/"图文"）。
+// - design-svc 对渠道零感知：核心代码只说本模型的语言，禁止渠道身份分支（规范 R4/R5）。
+message UnifiedMessage {
+  // ULID
+  string message_id = 1;
+  ishome.common.v1.ChannelType channel_type = 2;
+  // 接入实例，格式 {type}:{instance-slug}，如 feishu:ishome-prod（规范 §6.1 两级标识）
+  string channel_instance = 3;
+  MessageDirection direction = 4;
+  // 该渠道内的用户标识（identity-svc 渠道绑定键之一；飞书填 open_id——方言值只出现在数据里）
+  string external_user_id = 5;
+  // identity-svc 归一后的用户 id（入站消息在身份绑定完成前可空；出站必填）
+  string user_id = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+
+  oneof content {
+    TextContent text = 10;
+    ImageContent image = 11;
+    CardContent card = 12;
+    QuickReplyContent quick_reply = 13;
+    AudioContent audio = 14;
+  }
+
+  // 渠道原始载荷存档，字段名保留渠道方言（方言唯一允许出现的数据位置，对齐规范 §6.4 raw_* 思路）
+  google.protobuf.Struct raw_payload = 20;
+}
+
+enum MessageDirection {
+  MESSAGE_DIRECTION_UNSPECIFIED = 0;
+  // 用户 → 系统
+  MESSAGE_DIRECTION_INBOUND = 1;
+  // 系统 → 用户
+  MESSAGE_DIRECTION_OUTBOUND = 2;
+}
+
+message TextContent {
+  string text = 1;
+}
+
+message ImageContent {
+  string image_url = 1;
+  string mime_type = 2;
+  uint32 width_px = 3;
+  uint32 height_px = 4;
+}
+
+// 卡片 = 链接 + 预览（基础模型口径）。无卡片能力的渠道由策略引擎降级为纯链接文本。
+message CardContent {
+  string title = 1;
+  string description = 2;
+  string link_url = 3;
+  string preview_image_url = 4;
+}
+
+// 出站：带按钮的快捷回复；入站：用户点击按钮后 adapter 翻译回的"用户选择"消息
+// （selected_option_id 填被选项，对齐文档 §6.7 飞书按钮回调映射）。
+message QuickReplyContent {
+  string prompt_text = 1;
+  repeated QuickReplyOption options = 2;
+  // 仅入站方向使用
+  string selected_option_id = 3;
+}
+
+message QuickReplyOption {
+  string option_id = 1;
+  string label = 2;
+}
+
+message AudioContent {
+  string audio_url = 1;
+  string mime_type = 2;
+  uint32 duration_ms = 3;
+}

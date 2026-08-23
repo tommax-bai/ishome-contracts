@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package ishome.design.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "ishome/common/v1/cognitive_state.proto";
+import "ishome/common/v1/fact_kind.proto";
+
+// design 域类型（v0 草案）。
+// 状态：首个 tag 发布前允许调整字段；首个 tag 后进入"字段只增不删"纪律（buf breaking 强制）。
+// 存储落点：svc_design schema（对齐文档 §5.1）；本文件只定跨服务传输形态。
+
+// 项目阶段（Agent 方案 §3：初步设计 / 深度设计，阶段门=用户显式进入）
+enum ProjectPhase {
+  PROJECT_PHASE_UNSPECIFIED = 0;
+  PROJECT_PHASE_PRELIMINARY = 1;
+  PROJECT_PHASE_DEEP = 2;
+}
+
+// 认知状态标注的事实项（Agent 方案 §8.1 JSON 示例的 proto 形态；落 svc_design.facts）
+message Fact {
+  string fact_id = 1;
+  // 目标对象 id，如 space-living-room
+  string target_id = 2;
+  // 属性名，如 width
+  string property = 3;
+  oneof value {
+    double number_value = 4;
+    string string_value = 5;
+    bool bool_value = 6;
+  }
+  // 量纲，如 mm / sqm（量纲入名纪律的传输侧对应）
+  string unit = 7;
+  ishome.common.v1.CognitiveState cognitive_state = 8;
+  // 信任分轨：结构类不存在 user_confirmed 即采信的路径（Agent 方案 §8.3 / §15.1）
+  ishome.common.v1.FactKind fact_kind = 9;
+  // 来源，如 source_plan_scale
+  string source = 10;
+  // 把握程度 0-1
+  double confidence = 11;
+  ProjectPhase stage = 12;
+}
+
+// 结构化 Patch（Agent 方案 §11）。Agent 不直接任意改写项目状态：
+// Patch → 阶段与权限检查 → 几何与规则校验（genpipe 规则 activity）→ 新 Revision → outbox 事件 → 受影响产物重算。
+message Patch {
+  // 意图标识，如 replace_double_desk_with_reading_corner
+  string intent = 1;
+  ProjectPhase stage = 2;
+  repeated PatchOp operations = 3;
+  // 修改原因（RevisionLog 留痕）
+  string reason = 4;
+}
+
+message PatchOp {
+  PatchOpType op = 1;
+  // remove/update 的目标对象 id，如 desk-02
+  string target_id = 2;
+  // add 的对象类型，如 furniturePlacement / activity（Agent 方案 §6.2 实体词表）
+  string object_type = 3;
+  // op 的对象载荷（add 的属性、update 的变更集）
+  google.protobuf.Struct payload = 4;
+}
+
+enum PatchOpType {
+  PATCH_OP_TYPE_UNSPECIFIED = 0;
+  PATCH_OP_TYPE_ADD = 1;
+  PATCH_OP_TYPE_REMOVE = 2;
+  // v0 预留，语义随 patch 引擎细化
+  PATCH_OP_TYPE_UPDATE = 3;
+}
+
+// 确认清单项（Agent 方案 §8.2：清单只含把握不足或高影响字段，不得问卷化；确认方式=看图点错）
+message ConfirmationItem {
+  string item_id = 1;
+  // 关联的事实项
+  string fact_id = 2;
+  // 画回确认底图上的标注文案，如"我认为这是主卧，宽约 3.6 米"
+  string annotation_text = 3;
+  // 确认底图（plan-2d-render 产物）上的标注定位引用
+  string annotation_ref = 4;
+}
+
+message ProjectSummary {
+  // ULID
+  string project_id = 1;
+  // identity-svc 用户 id
+  string user_id = 2;
+  ProjectPhase phase = 3;
+  // 户型引用：estate floorplan id 或私有上传标识（公开内容与私有项目分轨）
+  string floorplan_ref = 4;
+  // 当前方案版本号（PreliminaryPlan Revision）
+  int64 current_revision = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}

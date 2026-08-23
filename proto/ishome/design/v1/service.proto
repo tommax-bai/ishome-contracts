@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package ishome.design.v1;
+
+import "google/protobuf/struct.proto";
+import "ishome/channel/v1/message.proto";
+import "ishome/design/v1/types.proto";
+
+// design-svc 对内 gRPC（对齐文档 §5.3：会话、确认、Patch、项目查询）。v0 草案。
+// 编排语义（Temporal signal、workflow 推进）在 design-svc 内部，不出现在本契约。
+service DesignService {
+  // 会话入站：channel-svc 将统一模型消息转发至此。
+  // 输入归一化（语音转文字、短时间窗多消息聚合）在 design-svc 内完成——渠道层不理解语义（对齐 §6.6）。
+  rpc IngestMessage(IngestMessageRequest) returns (IngestMessageResponse);
+
+  // 确认闭环提交：c-bff 看图点错的结果。确认项升级 user_confirmed 并触发 workflow signal；
+  // 每次 H5 交互结果回写一条摘要消息到聊天线程（对齐 §6.1 配套纪律，由 design-svc 经 channel-svc 完成）。
+  rpc SubmitConfirmation(SubmitConfirmationRequest) returns (SubmitConfirmationResponse);
+
+  // 结构化 Patch 提交（校验 → 新 revision → outbox 事件 → 受影响产物重算）
+  rpc SubmitPatch(SubmitPatchRequest) returns (SubmitPatchResponse);
+
+  // 项目查询
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse);
+  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse);
+}
+
+message IngestMessageRequest {
+  // direction 必须为 INBOUND
+  ishome.channel.v1.UnifiedMessage message = 1;
+}
+
+message IngestMessageResponse {
+  // 已接收即成功；意图路由与回复为异步（IM 天然异步）
+  string message_id = 1;
+}
+
+message SubmitConfirmationRequest {
+  string project_id = 1;
+  repeated ConfirmationDecision decisions = 2;
+}
+
+// 用户对单个确认项的裁决：确认，或当场修正
+message ConfirmationDecision {
+  string item_id = 1;
+  ConfirmationAction action = 2;
+  // action=CORRECTED 时的修正值（结构与 Fact.value 对应）
+  google.protobuf.Struct correction = 3;
+}
+
+enum ConfirmationAction {
+  CONFIRMATION_ACTION_UNSPECIFIED = 0;
+  CONFIRMATION_ACTION_CONFIRMED = 1;
+  CONFIRMATION_ACTION_CORRECTED = 2;
+}
+
+message SubmitConfirmationResponse {
+  // 尚待确认的项数（0 = 确认闭环完成，workflow 进入建方案）
+  int32 open_item_count = 1;
+}
+
+message SubmitPatchRequest {
+  string project_id = 1;
+  // 乐观并发：基于的方案版本
+  int64 base_revision = 2;
+  Patch patch = 3;
+}
+
+message SubmitPatchResponse {
+  // 校验通过后产生的新版本号
+  int64 new_revision = 1;
+}
+
+message GetProjectRequest {
+  string project_id = 1;
+}
+
+message GetProjectResponse {
+  ProjectSummary project = 1;
+}
+
+message ListProjectsRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListProjectsResponse {
+  repeated ProjectSummary projects = 1;
+  string next_page_token = 2;
+}

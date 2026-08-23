@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package ishome.common.v1;
+
+// 认知状态（唯一词表，Agent 方案 §8.1）。
+// 所有关键数据必须带认知状态；禁止出现同义变体（如裸 confirmed）。
+// DB 按数据纪律存小写字符串（observed / inferred / proposed / user_confirmed / measured / verified），
+// 与本枚举一一对应。注册纪律：只增不改。
+//
+// 展示规则（Agent 方案 §8.1）：
+// - OBSERVED / USER_CONFIRMED / MEASURED 按相应来源正常展示；
+// - INFERRED 必须使用"约"或 ≈；无法建立合理比例时不输出伪精确毫米数；
+// - 进入深度设计后，关键 INFERRED 数据必须被补充或验证。
+enum CognitiveState {
+  COGNITIVE_STATE_UNSPECIFIED = 0;
+  // 原始资料直接可见
+  COGNITIVE_STATE_OBSERVED = 1;
+  // AI 根据比例或上下文推算
+  COGNITIVE_STATE_INFERRED = 2;
+  // AI 提出的设计建议
+  COGNITIVE_STATE_PROPOSED = 3;
+  // 用户确认（确认闭环产物；设计只引用确认后的关键信息）
+  COGNITIVE_STATE_USER_CONFIRMED = 4;
+  // 现场测量（毫米级交付下单前量房升级到此，属交易流程的数据升级步骤）
+  COGNITIVE_STATE_MEASURED = 5;
+  // 深度设计阶段经实测或硬证据核验（核验主体是数据）
+  COGNITIVE_STATE_VERIFIED = 6;
+}
