@@ -1,0 +1,11 @@
+# buf v2 模块配置 —— contracts 仓唯一真源
+# 纪律：字段只增不删（首个 tag 后 breaking 检查强制）；proto 包 ishome.{domain}.v1
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE

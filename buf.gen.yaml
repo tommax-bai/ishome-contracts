@@ -1,0 +1,21 @@
+# 三语言 SDK 生成配置（生成产物提交入库，CI 校验新鲜度）
+# Java  → gen/java/src/main/java   （Maven 坐标 com.ishome:ishome-contracts-java，GitHub Packages，发布 stub 见 CI）
+# TS    → gen/ts/src               （npm @tommax-bai/ishome-contracts，GitHub Packages npm 强制 scope=账号名）
+# Python→ gen/python/              （包名 ishome-contracts；GitHub Packages 不支持 PyPI，消费方用 git 依赖 + subdirectory=gen/python）
+version: v2
+managed:
+  enabled: true
+  # java_package 默认加 com. 前缀：ishome.common.v1 → com.ishome.common.v1，与 backend 包约定一致
+plugins:
+  - remote: buf.build/protocolbuffers/java
+    out: gen/java/src/main/java
+  - remote: buf.build/grpc/java
+    out: gen/java/src/main/java
+  - remote: buf.build/bufbuild/es
+    out: gen/ts/src
+  - remote: buf.build/protocolbuffers/python
+    out: gen/python
+  - remote: buf.build/protocolbuffers/pyi
+    out: gen/python
+  - remote: buf.build/grpc/python
+    out: gen/python
