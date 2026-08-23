@@ -66,6 +66,15 @@ public enum ChannelType
    * <code>CHANNEL_TYPE_SMS = 5;</code>
    */
   CHANNEL_TYPE_SMS(5),
+  /**
+   * <pre>
+   * 内置 mock 渠道（对齐文档 §6.4）：集成测试工具兼本地开发环境，会话级能力全开。
+   * 仅限本地开发与自动化测试使用，禁止出现在生产环境配置中。
+   * </pre>
+   *
+   * <code>CHANNEL_TYPE_MOCK = 6;</code>
+   */
+  CHANNEL_TYPE_MOCK(6),
   UNRECOGNIZED(-1),
   ;
 
@@ -122,6 +131,15 @@ public enum ChannelType
    * <code>CHANNEL_TYPE_SMS = 5;</code>
    */
   public static final int CHANNEL_TYPE_SMS_VALUE = 5;
+  /**
+   * <pre>
+   * 内置 mock 渠道（对齐文档 §6.4）：集成测试工具兼本地开发环境，会话级能力全开。
+   * 仅限本地开发与自动化测试使用，禁止出现在生产环境配置中。
+   * </pre>
+   *
+   * <code>CHANNEL_TYPE_MOCK = 6;</code>
+   */
+  public static final int CHANNEL_TYPE_MOCK_VALUE = 6;
 
 
   public final int getNumber() {
@@ -154,6 +172,7 @@ public enum ChannelType
       case 3: return CHANNEL_TYPE_WECHAT_OA;
       case 4: return CHANNEL_TYPE_WECHAT_MINI;
       case 5: return CHANNEL_TYPE_SMS;
+      case 6: return CHANNEL_TYPE_MOCK;
       default: return null;
     }
   }

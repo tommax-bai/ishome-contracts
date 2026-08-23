@@ -36,15 +36,16 @@ public final class ChannelTypeProto extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n#ishome/common/v1/channel_type.proto\022\020i" +
-      "shome.common.v1*\254\001\n\013ChannelType\022\034\n\030CHANN" +
+      "shome.common.v1*\303\001\n\013ChannelType\022\034\n\030CHANN" +
       "EL_TYPE_UNSPECIFIED\020\000\022\027\n\023CHANNEL_TYPE_FE" +
       "ISHU\020\001\022\026\n\022CHANNEL_TYPE_WECOM\020\002\022\032\n\026CHANNE" +
       "L_TYPE_WECHAT_OA\020\003\022\034\n\030CHANNEL_TYPE_WECHA" +
-      "T_MINI\020\004\022\024\n\020CHANNEL_TYPE_SMS\020\005B\212\001\n\024com.i" +
-      "shome.common.v1B\020ChannelTypeProtoP\001\242\002\003IC" +
-      "X\252\002\020Ishome.Common.V1\312\002\020Ishome\\Common\\V1\342" +
-      "\002\034Ishome\\Common\\V1\\GPBMetadata\352\002\022Ishome:" +
-      ":Common::V1b\006proto3"
+      "T_MINI\020\004\022\024\n\020CHANNEL_TYPE_SMS\020\005\022\025\n\021CHANNE" +
+      "L_TYPE_MOCK\020\006B\212\001\n\024com.ishome.common.v1B\020" +
+      "ChannelTypeProtoP\001\242\002\003ICX\252\002\020Ishome.Common" +
+      ".V1\312\002\020Ishome\\Common\\V1\342\002\034Ishome\\Common\\V" +
+      "1\\GPBMetadata\352\002\022Ishome::Common::V1b\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

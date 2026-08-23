@@ -12,9 +12,11 @@ class ChannelType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     CHANNEL_TYPE_WECHAT_OA: _ClassVar[ChannelType]
     CHANNEL_TYPE_WECHAT_MINI: _ClassVar[ChannelType]
     CHANNEL_TYPE_SMS: _ClassVar[ChannelType]
+    CHANNEL_TYPE_MOCK: _ClassVar[ChannelType]
 CHANNEL_TYPE_UNSPECIFIED: ChannelType
 CHANNEL_TYPE_FEISHU: ChannelType
 CHANNEL_TYPE_WECOM: ChannelType
 CHANNEL_TYPE_WECHAT_OA: ChannelType
 CHANNEL_TYPE_WECHAT_MINI: ChannelType
 CHANNEL_TYPE_SMS: ChannelType
+CHANNEL_TYPE_MOCK: ChannelType

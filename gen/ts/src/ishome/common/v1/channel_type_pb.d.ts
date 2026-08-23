@@ -61,6 +61,14 @@ export enum ChannelType {
    * @generated from enum value: CHANNEL_TYPE_SMS = 5;
    */
   SMS = 5,
+
+  /**
+   * 内置 mock 渠道（对齐文档 §6.4）：集成测试工具兼本地开发环境，会话级能力全开。
+   * 仅限本地开发与自动化测试使用，禁止出现在生产环境配置中。
+   *
+   * @generated from enum value: CHANNEL_TYPE_MOCK = 6;
+   */
+  MOCK = 6,
 }
 
 /**
