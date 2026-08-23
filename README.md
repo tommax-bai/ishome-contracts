@@ -44,3 +44,7 @@ buf generate              # 重新生成 gen/（需外网；本机走 Clash 代�
 ## 状态
 
 v0 草案（2026-08-22 落地首夜）。design/channel proto 标注 v0 的字段允许在首个 tag 前调整；首个 tag 后全面进入 breaking 纪律。
+
+## 本地质量门（pre-push）
+
+云端 CI 停用期间的本地把关：push 前自动跑本仓全套检查。新 clone 后执行一次 `git config core.hooksPath .githooks` 启用；紧急绕过用 `git push --no-verify`。
