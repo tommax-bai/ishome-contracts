@@ -19,3 +19,7 @@ dependencies = [
 [tool.setuptools.packages.find]
 include = ["ishome*"]
 namespaces = true
+
+# pyi 存根与 PEP 561 标记随 wheel 分发（缺这段 mypy 会把本包当无类型）
+[tool.setuptools.package-data]
+"*" = ["*.pyi", "py.typed"]
