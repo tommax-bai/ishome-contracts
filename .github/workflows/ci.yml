@@ -1,0 +1,40 @@
+name: contracts-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: buf lint
+        run: buf lint
+      - name: buf breaking（against main；首个 tag 后改 against tag）
+        if: github.event_name == 'pull_request'
+        run: buf breaking --against ".git#branch=origin/main"
+      - name: 生成物新鲜度校验（gen/ 必须与 proto/ 同步提交）
+        run: |
+          buf generate
+          git diff --exit-code -- gen/ \
+            || { echo "::error::gen/ 与 proto/ 不同步——本地跑 buf generate 后重新提交"; exit 1; }
+
+  # ---- 发布 stub（TODO：SDK 发布节奏拍板后启用，见中控仓《落地假设与拍板清单》） ----
+  # Java → GitHub Packages Maven（com.ishome:ishome-contracts-java）：
+  #   cd gen/java && gradle publish   # GITHUB_ACTOR/GITHUB_TOKEN 由 Actions 注入
+  # TS → GitHub Packages npm（@tommax-bai/ishome-contracts）：
+  #   cd gen/ts && npm publish        # 需要 permissions: packages: write
+  # Python：不发布——生成代码已入库，消费方用 git 依赖 + subdirectory=gen/python
+  publish:
+    if: false  # TODO 拍板后启用：改为 tag 触发
+    runs-on: ubuntu-latest
+    needs: lint-and-freshness
+    steps:
+      - run: echo "publish stub"

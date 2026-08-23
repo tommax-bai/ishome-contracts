@@ -1,0 +1,20 @@
+{
+  "name": "@tommax-bai/ishome-contracts",
+  "version": "0.1.0-dev",
+  "description": "ishome contracts TS SDK（生成代码在 src/，由 buf generate 产出，手改无效；GitHub Packages npm 强制 scope=账号名，与 {code} 解耦）",
+  "license": "UNLICENSED",
+  "private": false,
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.2.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tommax-bai/ishome-contracts.git"
+  }
+}
