@@ -1,0 +1,19 @@
+# admin-bff 对外 REST 契约（v0 空骨架）
+# 运营 CRUD（小区库、交付日历、选品池）走 RuoYi 基座代码生成，不逐一入契约；
+# 自研仅模板验收台（设计时动作），端点随其落地增补。
+openapi: 3.1.0
+info:
+  title: ishome admin-bff API
+  version: 0.1.0-dev
+servers:
+  - url: /api/v1
+paths: {}
+components:
+  schemas:
+    error_info:
+      type: object
+      required: [code, message, request_id]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        request_id: { type: string }

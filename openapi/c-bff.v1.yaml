@@ -1,0 +1,96 @@
+# c-bff 对外 REST 契约（v0 骨架）
+# 纪律：JSON 字段 snake_case 端到端统一（OpenAPI 生成 TS 客户端，消灭手写驼峰转换）；
+# URL 大版本；字段只增不删；废弃字段带 sunset 头；复数资源；统一错误信封。
+openapi: 3.1.0
+info:
+  title: ishome c-bff API
+  version: 0.1.0-dev
+  description: >-
+    C 端聚合层（H5 指图时刻 / 小程序分享卡片与支付容器）。
+    v0 骨架：仅示例确认闭环两端点，其余端点随 c-bff 落地增补。
+servers:
+  - url: /api/v1
+paths:
+  /projects/{project_id}/confirmation-items:
+    get:
+      operationId: list_confirmation_items
+      summary: 拉取待确认清单（看图点错底图 + 标注项）
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: 待确认项与确认底图
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/confirmation_checklist" }
+        default:
+          $ref: "#/components/responses/error"
+  /projects/{project_id}/confirmations:
+    post:
+      operationId: submit_confirmations
+      summary: 提交确认/修正结果（结果将回写一条摘要消息到聊天线程）
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/confirmation_submission" }
+      responses:
+        "200":
+          description: 提交结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  open_item_count: { type: integer, description: 尚待确认的项数，0=闭环完成 }
+        default:
+          $ref: "#/components/responses/error"
+components:
+  responses:
+    error:
+      description: 统一错误信封（错误码注册表见 contracts errors/registry.md）
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/error_info" }
+  schemas:
+    error_info:
+      type: object
+      required: [code, message, request_id]
+      properties:
+        code: { type: string, description: "形如 DESIGN_001" }
+        message: { type: string }
+        request_id: { type: string }
+    confirmation_checklist:
+      type: object
+      properties:
+        base_image_url: { type: string, description: 确认底图（plan-2d-render 产物，STS 签名 URL） }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              item_id: { type: string }
+              fact_id: { type: string }
+              annotation_text: { type: string, description: "如：我认为这是主卧，宽约 3.6 米" }
+              annotation_ref: { type: string }
+    confirmation_submission:
+      type: object
+      required: [decisions]
+      properties:
+        decisions:
+          type: array
+          items:
+            type: object
+            required: [item_id, action]
+            properties:
+              item_id: { type: string }
+              action: { type: string, enum: [confirmed, corrected] }
+              correction: { type: object, additionalProperties: true }
