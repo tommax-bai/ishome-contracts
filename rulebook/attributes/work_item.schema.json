@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rulebook attribute props: work_item",
+  "description": "工项单价区间（dom-budget）。来源：规范 v2.2 规则 5.15 §1、§5.9 数据源裁决（公开数据起步，置信分级定区间宽度）；种子草案 rulebook-seeds/budget/attributes.yaml。时效资产：effective 越界自动降档（cr-budget-stale-price）。单价口径禁跨单位换算推导（获取回路 run-2026-08-27 口径裁定：定制柜用 投影㎡）。",
+  "type": "object",
+  "properties": {
+    "unit": {
+      "type": "string",
+      "enum": ["㎡", "投影㎡", "延米", "点位", "项"],
+      "description": "计价单位（口径的一部分，只增不改；禁跨口径换算）"
+    },
+    "price_range": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "[low, high]，区间宽度随置信调整（lkp-budget-confidence-width）"
+    },
+    "city_tier": {
+      "type": ["string", "null"],
+      "description": "城市档（首批公开数据取不到城市档时为 全国粗档，待信息价类源）"
+    },
+    "breakdown": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          { "type": "number" }
+        ]
+      },
+      "description": "细分口径（如按墙体类型/档位），键为细分名，值为 [low, high] 区间或单值档位边界（如 高定下限）"
+    },
+    "confidence": {
+      "type": ["string", "null"],
+      "enum": ["high", "medium", "low", null],
+      "description": "导入镜像；以 attributes.confidence 表列为准（治理头，规则 4.10）"
+    },
+    "effective_from": {
+      "type": ["string", "null"],
+      "description": "导入镜像；以 attributes.effective_from 表列为准（时效资产必填）"
+    },
+    "effective_to": {
+      "type": ["string", "null"],
+      "description": "导入镜像；以 attributes.effective_to 表列为准（时效资产必填）"
+    }
+  },
+  "required": ["unit", "price_range"],
+  "additionalProperties": false
+}

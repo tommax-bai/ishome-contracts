@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rulebook attribute props: material",
+  "description": "材质属性卡（dom-material）。来源：规范 v2.2 规则 5.11 §2；种子草案 rulebook-seeds/material/attributes.yaml。字段值缺失用 null（获取回路补齐，规则 4.16）。",
+  "type": "object",
+  "properties": {
+    "abrasion": {
+      "type": ["string", "null"],
+      "description": "耐磨等级或转数（地材耐磨等级 / 马丁代尔转数）；须可溯源检测标准，source_required"
+    },
+    "stain_resistance": {
+      "type": ["string", "null"],
+      "description": "耐污"
+    },
+    "moisture": {
+      "type": ["string", "null"],
+      "description": "防潮"
+    },
+    "care_cycle": {
+      "type": ["string", "null"],
+      "description": "保养周期与打理要点（Q-MAINTAIN 加权推荐的输入）"
+    },
+    "eco_grade": {
+      "type": ["string", "null"],
+      "description": "环保等级"
+    },
+    "aging_2y": {
+      "type": ["string", "null"],
+      "description": "两年后的样子——经验字段，无外部真源：所在条目恒 draft，只能降档呈现（规则 4.10a）"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rulebook attribute props: storage_item",
+  "description": "收纳物品外廓尺寸（dom-storage）。来源：规范 v2.2 规则 5.13 §2/§4；种子草案 rulebook-seeds/storage/attributes.yaml。尺寸驱动柜内配与仓位计算（gen-evaluated）。",
+  "type": "object",
+  "properties": {
+    "w": {
+      "type": "number",
+      "description": "宽，mm"
+    },
+    "d": {
+      "type": "number",
+      "description": "深，mm"
+    },
+    "h": {
+      "type": "number",
+      "description": "高，mm"
+    },
+    "qty_per_family": {
+      "type": ["string", "null"],
+      "description": "家庭结构对应件数（来自 Q-STORAGE 盘点回流）"
+    }
+  },
+  "required": ["w", "d", "h"],
+  "additionalProperties": false
+}

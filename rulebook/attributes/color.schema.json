@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rulebook attribute props: color",
+  "description": "色板卡（dom-softdeco）。来源：规范 v2.2 规则 5.14 §1；种子草案 rulebook-seeds/softdeco/attributes.yaml。色值锚定待色彩命名体系（vocabulary 形态）定形；与材质域色名对齐，禁两套色名。",
+  "type": "object",
+  "properties": {
+    "hex": {
+      "type": ["string", "null"],
+      "description": "色值（#RRGGBB）；null=待色卡体系（NCS/RAL 或自有色板）锚定",
+      "pattern": "^#?[0-9A-Fa-f]{6}$"
+    },
+    "warm_cool": {
+      "type": ["string", "null"],
+      "enum": ["warm", "cool", "neutral", null],
+      "description": "冷暖"
+    },
+    "lightness": {
+      "type": ["number", "null"],
+      "description": "明度"
+    },
+    "pairs_with": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "搭配色（引用其他 color 条目 asset_id）"
+    },
+    "render_consistency": {
+      "type": ["string", "null"],
+      "description": "与 art-space-render 效果图取色一致性锚（规则 5.14）"
+    }
+  },
+  "additionalProperties": false
+}
