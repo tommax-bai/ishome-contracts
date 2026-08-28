@@ -19,3 +19,6 @@
 | 8 | `realism-pass` | `apply_realism_pass` | 生成式写实化 | 复用（工厂效果图同用） |
 | 9 | `consistency-check` | `check_consistency` | 户型与跨视角一致性校验（机检门禁组件；QA 清单为其第一版检查规范） | 复用 |
 | 10 | `compliance-check` | `check_compliance` | 内容安全 | **两条路径都强制**（机检全覆盖） |
+| 11 | `report-unit-compose` | `compose_report_unit` | 报告成文线·单元成文（图 v0.2 §3 单元子图整段：叙事推导→卡片写作→出口过检·规则层→重写 ≤2 轮→failed verdict 上抛）。**dom- 为参数不拆 activity**（规则 5.0c 一台引擎 N 域资产包）；输入=报告数据包本域切片（自包含，不回查库）；数字字段只能引用落点对象（`{lkp-*}` 占位，正文禁裸数字） | reportgen-svc 专用 |
+| 12 | `report-page-assemble` | `assemble_report_pages` | 报告成文线·页面装配（唯一知道"页"的节点，确定性；pt- 页型库待编译，首版按域成页） | reportgen-svc 专用 |
+| 13 | `report-book-check` | `check_report_book` | 报告成文线·册级校验（渲染前；册级 cr- 判据随 release 数据物化执行，首版为结构完整性检查） | reportgen-svc 专用 |

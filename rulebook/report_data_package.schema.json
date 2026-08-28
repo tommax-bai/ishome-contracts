@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "report data package (报告数据包)",
+  "description": "求值线产物 / 成文线 input_snapshot 内容本体（图 v0.2 §2）。自包含：成文线不回查任何库——persona 全文、cr- 判据、禁词表随包。匿名：additionalProperties=false 结构性排除任何用户/项目标识（图 v0.2 §0）。生产方=project-svc 规则引擎（Jackson camelCase 序列化）；消费方=reportgen report-unit-compose。确定性：anchors/gaps 按 lkpId、releases 按 domain、域内资产按 assetId 排序，同输入字节级同输出（规则 8.2）。",
+  "type": "object",
+  "properties": {
+    "domains": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "本包覆盖的知识域（去前缀形态，按字典序）"
+    },
+    "releases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "domain": { "type": "string" },
+          "releaseTag": { "type": "string", "pattern": "^[a-z][a-z-]*@v[0-9]+$" }
+        },
+        "required": ["domain", "releaseTag"],
+        "additionalProperties": false
+      },
+      "description": "消费的 release 引用集（版本锁定，规则 8.2；产物 lineage 记录同一集合）"
+    },
+    "anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "lkpId": { "type": "string", "pattern": "^lkp-" },
+          "name": { "type": "string" },
+          "numberClass": { "type": ["string", "null"], "enum": ["locating", "selection", "analysis", null] },
+          "unit": { "type": ["string", "null"] },
+          "value": { "type": "object", "description": "求值后数值包（min/max/v/分档键，异构）" },
+          "basisTag": { "type": "string", "description": "依据 release 引用" },
+          "source": { "type": ["string", "null"], "description": "推导可见的出处" },
+          "calibration": { "type": "string", "enum": ["draft", "calibrated", "needs_review"] },
+          "degraded": { "type": "boolean", "description": "未过可核性门——消费侧按规则 4.10/4.18 降档或缺席，PAID 门禁在消费侧" }
+        },
+        "required": ["lkpId", "name", "value", "basisTag", "calibration", "degraded"],
+        "additionalProperties": false
+      },
+      "description": "落点对象：成文线数字字段唯一合法来源（正文禁裸数字，经 {lkp-*} 占位引用）"
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "lkpId": { "type": "string" },
+          "reason": { "type": "string", "enum": ["missing_input", "formula_not_implemented", "empty_definition"] },
+          "detail": { "type": ["string", "null"] }
+        },
+        "required": ["lkpId", "reason"],
+        "additionalProperties": false
+      },
+      "description": "求值缺口（gap-）：随产物回流，不阻塞"
+    },
+    "personasByDomain": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "assetId": { "type": "string", "pattern": "^persona-" },
+            "identity": { "type": "string", "description": "语域身份（回路编译产物，非手册原文——规则 4.19）" },
+            "judgmentSamples": { "type": "array" },
+            "assertionBudget": { "type": "array", "description": "[{predicate, requires:[lkp-*]}]——判断句须 requires 已求值（规则 5.8）" },
+            "bannedTerms": { "type": "object", "description": "域内禁词（domain_extra 等；公共禁词在 bannedTermsByDomain）" },
+            "version": { "type": "integer" }
+          },
+          "required": ["assetId", "identity", "version"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "checksByDomain": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "assetId": { "type": "string", "pattern": "^cr-" },
+            "checkType": { "type": "string" },
+            "scope": { "type": "array", "items": { "type": "string" } },
+            "pattern": { "type": ["string", "null"] },
+            "requirement": { "type": ["string", "null"] },
+            "message": { "type": "string" },
+            "decidedBy": { "type": "string", "description": "裁决记录锚（规则 4.10b，非空）" },
+            "thresholdRefs": { "type": "array", "items": { "type": "string" }, "description": "数值阈值只经 lkp- 引用" },
+            "version": { "type": "integer" }
+          },
+          "required": ["assetId", "checkType", "message", "decidedBy", "version"],
+          "additionalProperties": false
+        }
+      },
+      "description": "cr- 机检判据（release 数据物化执行，不硬编码）"
+    },
+    "bannedTermsByDomain": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } },
+      "description": "vocabulary(kind=banned_term) 平铺去重排序（公共禁词发布时已物化进各域）"
+    },
+    "anonymousProfile": {
+      "type": "object",
+      "properties": {
+        "chiefHeightMm": { "type": ["integer", "null"] },
+        "tallestHeightMm": { "type": ["integer", "null"] },
+        "eyeHeightMm": { "type": ["integer", "null"] },
+        "tvScreenHeightMm": { "type": ["integer", "null"] },
+        "layoutFeatures": { "type": "object", "additionalProperties": { "type": "string" }, "description": "estate 标注户型特征（规则 6.3 字段）" }
+      },
+      "required": ["layoutFeatures"],
+      "additionalProperties": false,
+      "description": "匿名画像：禁止任何用户/项目标识字段"
+    }
+  },
+  "required": ["domains", "releases", "anchors", "gaps", "personasByDomain", "checksByDomain", "bannedTermsByDomain", "anonymousProfile"],
+  "additionalProperties": false
+}

@@ -14,4 +14,4 @@
 | `render2d-activities` | render2d-svc（ishome-render2d） | `plan-2d-render` | V1.4 裁决：确定性 2D 绘图，CPU 伸缩轴 |
 | `imagegen-activities` | imagegen-svc（ishome-imagegen） | `atmosphere-visual`、`realism-pass` | V1.4 裁决：生成式出图，外部模型 API / GPU 推理伸缩轴 |
 | `render3d-activities` | render3d-svc（ishome-render3d） | `scene-compile`、`base-render` | V1.4 裁决：三维管线，GPU + 三维引擎伸缩轴 |
-| `reportgen-activities` | reportgen-svc（ishome-reportgen） | 成文线首批 activity 待注册（先过本仓评审再落实现） | 图 v0.2 §2/§8：报告两线拆分——求值线落 project-svc 规则引擎（同步，不进队列），成文线（gen-generated/gen-polished）落独立 worker，LLM 推理伸缩轴 |
+| `reportgen-activities` | reportgen-svc（ishome-reportgen） | `report-unit-compose`、`report-page-assemble`、`report-book-check` | 图 v0.2 §2/§8：报告两线拆分——求值线落 project-svc 规则引擎（同步，不进队列），成文线（gen-generated/gen-polished）落独立 worker，LLM 推理伸缩轴 |

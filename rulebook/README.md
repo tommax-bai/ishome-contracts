@@ -98,3 +98,14 @@ attributes 表以 `entity_type` + JSONB `props` 承载异构实体，**不按实
 | `storage_item` | `attributes/storage_item.schema.json` | dom-storage | 收纳物品外廓尺寸（mm） |
 | `color` | `attributes/color.schema.json` | dom-softdeco | 色板卡（色值/冷暖/明度） |
 | `work_item` | `attributes/work_item.schema.json` | dom-budget | 工项单价区间（单位口径+时效，城市档） |
+
+## 8. 报告数据包（求值线 → 成文线契约）
+
+`report_data_package.schema.json`：求值线（project-svc 规则引擎）产物、成文线（reportgen
+`report-unit-compose`）input_snapshot 的内容本体（图 v0.2 §2）。三条硬性约定：
+
+- **自包含**：persona 全文、cr- 判据、禁词表随包——成文线不回查任何库；
+- **匿名**：`additionalProperties: false` 结构性排除用户/项目标识（图 v0.2 §0）；
+- **数字纪律**：成文线数字字段只能引用 anchors（正文禁裸数字，经 `{lkp-*}` 占位）——机检可逐字段比对零漂移。
+
+字段只增不删；锁定清单与动作表字段随清单求值落地时增补。
