@@ -118,13 +118,32 @@
             "message": { "type": "string" },
             "decidedBy": { "type": "string", "description": "裁决记录锚（规则 4.10b，非空）" },
             "thresholdRefs": { "type": "array", "items": { "type": "string" }, "description": "数值阈值只经 lkp- 引用" },
+            "examples": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "bad": { "type": "string", "description": "真跑里模型写出的原句——只收观察到的样本，禁想象填充（规范 v2.3 §12）" },
+                  "why": { "type": "string", "description": "为什么它违反本条判据" },
+                  "fixed": { "type": "string", "description": "合规写法；给写作侧与回路看，不下发给判官（判官只报编号不改写）" }
+                },
+                "required": ["bad", "why", "fixed"],
+                "additionalProperties": false
+              },
+              "description": "判官反例样例（规则 4.17）：挂 cr- 判据之下、不建第三类命名空间（规则 4.10b）；样例是文本非阈值。缺省 []"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["observing", "active", "retired"],
+              "description": "入册状态（规则 4.17 门禁二）：observing 只记录不拦截 / active 命中即违规 / retired 停用留档。缺省 observing"
+            },
             "version": { "type": "integer" }
           },
           "required": ["assetId", "checkType", "message", "decidedBy", "version"],
           "additionalProperties": false
         }
       },
-      "description": "cr- 机检判据（release 数据物化执行，不硬编码）"
+      "description": "cr- 判据（release 数据物化执行，不硬编码）：无 examples 者归规则层机检，examples 非空者归判官层（图 v0.2 §3）"
     },
     "bannedTermsByDomain": {
       "type": "object",
