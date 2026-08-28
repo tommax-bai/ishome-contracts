@@ -150,6 +150,11 @@
       "additionalProperties": { "type": "array", "items": { "type": "string" } },
       "description": "vocabulary(kind=banned_term) 平铺去重排序（公共禁词发布时已物化进各域）"
     },
+    "lockedTextsByDomain": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" }, "description": "锁定文案 ID（升序去重）" },
+      "description": "锁定清单（图 v0.2 §2）：本产物必挂的锁定文案 ID 集，枚举与挂载纪律见 ../registries/locked_texts.md。**只有 ID 没有正文**——gen-locked 的定义是引用 ID 直接渲染、零生成（规则 2.4），正文在渲染层按 ID 取，成文线看不到就拼接不出来。键为 dom- 去前缀形态：成文线不认识 art-（本包无产物字段，单元轴=dom-），art-→dom- 换算由调用方在求值前做完；要挂哪几条由调用方按它在生成哪个 art- 传入，与 entitlement 同机制（规则引擎不持有产物清单）。缺省/缺键=本产物无必挂文案（生产方未升级的旧包不误判）；该挂没挂由册级校验 report-book-check 报出。造价章即规则 5.15 的 DISCLAIM_PRICE 必挂。"
+    },
     "anonymousProfile": {
       "type": "object",
       "properties": {

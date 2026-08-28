@@ -42,7 +42,9 @@
 - prec-schematic 产物**禁止**输出任何定位数字（规范规则 2.2/2.3，机检双保险见规范 §11.6）。
 - 监督/博弈类产物（`art-hydro-checklist`/`art-quotation-checklist`/`art-acceptance-checklist`/`art-budget-chapter`）**禁止**植入商品（规范规则 9.2）。
 - 计算/绘制归属映射见规范 §11.7（genpipe-worker / render2d / imagegen / render3d / 规则求值引擎）。
+- **锁定文案必挂**：产物 → 必挂锁定文案 ID 的映射见 `locked_texts.md`（如 `art-budget-chapter` 必挂 `DISCLAIM_PRICE`，规范规则 5.15；全部 prec-schematic 产物图框必挂 `DISCLAIM_P1`，规范 §7）。文案为 gen-locked：**只引用 ID，代码禁止拼接生成正文**（规则 2.4）。
 
 ## 关联枚举
 
 `prec-` / `gen-` / `stage-` 枚举定义见 `../rulebook/README.md`（同 PR 注册，规范 §1.3 前缀全集）。
+锁定文案 ID 枚举（`DISCLAIM_*` / `SAFE_*` / `GUIDE_*` / `ACK_*`）见 `locked_texts.md`（规范 §7/§11.5）。

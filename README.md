@@ -22,7 +22,7 @@
 | `events/registry.md` | CloudEvents 注册表（`com.ishome.{domain}.{entity}.{past-verb}`） |
 | `activities/registry.md` | Temporal activity 注册名（10 个，只增不改） |
 | `errors/registry.md` | 错误码注册表（`{DOMAIN}_{3位}`） |
-| `registries/` | 变化轴注册表（渠道、模板、规则、打分器、轴索引）、任务队列注册表、**报告产物注册表**（`artifacts.md`，art-） |
+| `registries/` | 变化轴注册表（渠道、模板、规则、打分器、轴索引）、任务队列注册表、**报告产物注册表**（`artifacts.md`，art-）、**锁定文案 ID 注册表**（`locked_texts.md`，gen-locked 枚举 + 产物必挂映射） |
 | `rulebook/` | svc_rulebook 知识资产契约面：dom-/form/gen-/prec- 枚举、release 引用格式、attributes entity_type JSONSchema（只进契约不进内容，规范 v2.2 规则 4.12） |
 | `gen/` | 三语言生成代码（`buf generate` 产出，**手改无效**，CI 校验新鲜度） |
 
