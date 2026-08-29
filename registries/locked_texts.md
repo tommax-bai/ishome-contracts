@@ -28,6 +28,15 @@
 | `SAFE_LAYOUT_CHANGE` | **待从《页面级操作手册》§0.3 补录（禁编造）** | 格局改动相关安全级话术；细分口径待补录原文后确认 | 仅 ID 与用途 |
 | `DISCLAIM_RENDER` | **待从《页面级操作手册》§0.3 补录（禁编造）** | 效果图/概念图免责（`prec-concept`、概念级产物） | 仅 ID 与用途 |
 | `DISCLAIM_PRICE` | **待从《页面级操作手册》§0.3 补录（禁编造）** | 造价免责：规则 5.15 造价章纪律"只出区间，禁止精确总价与任何'这个价能做'式承诺（**DISCLAIM_PRICE 必挂**）" | 仅 ID 与用途 |
+| `GUIDE_NUMBER_SITE_CHECK` | **待起草 + 法务过目（禁编造）** | 正文页里的未过门定位数字：告诉业主这个数施工前要现场复核（规则 4.10c 配套话术，v2.4 取消隐藏档后的风险承接之一）。**与 `GUIDE_SITE_CHECK` 的区别**：那条是清单页头、正文写死"水电交底当天"，挂在非水电的正文页上语境错 | 仅 ID 与用途（待补录） |
+| `GUIDE_CHECKLIST_SITE_CHECK` | **待起草 + 法务过目（禁编造）** | 清单页头的逐项现场确认话术，**不写死交底场合**：规则 4.3 把现场复核机制推广至验收/报价清单，而 `GUIDE_SITE_CHECK` 正文限于水电交底当天，推广只能新增 ID 不能改正文 | 仅 ID 与用途（待补录） |
+
+**两条新 ID 的注册说明（裁决 2026-08-29 晚）**：用户裁决"正文用现场复核话术另立新 ID"（三问题处置②）
+与十六条裁决⑮"`GUIDE_SITE_CHECK` 推广新增一条 ID"，两条同批注册于此。语义命名在注册时定
+（规则 1.7）：`{语境}_SITE_CHECK` —— `GUIDE_NUMBER_SITE_CHECK` 管正文页里的数字、
+`GUIDE_CHECKLIST_SITE_CHECK` 管清单页头，`GUIDE_SITE_CHECK` 原样保留为水电交底那一条。
+**正文按裁决② 走起草 + 法务过目路径**（《页面级操作手册》原文找不到），过目后才落表；
+**落表前机制只认 ID，禁任何人或 AI 补写正文**（本表纪律二）。
 
 **"用途"列的证据等级**：`DISCLAIM_P1`/`GUIDE_SITE_CHECK`/`ACK_MANDATORY_WAIVER` 三条的用途是规范 §7 原文；
 五条待补录项里，`DISCLAIM_PRICE` 的必挂锚是规则 5.15 原文、`SAFE_LAYOUT_CHANGE` 的挂载条件是规则 5.6 原文；
@@ -40,7 +49,9 @@
 |---|---|---|---|
 | `DISCLAIM_P1` | `art-ceiling-lighting-plan`、`art-hydro-layout`（全部 `prec-schematic` 产物） | §7 原文"所有 prec-schematic 图纸图框必含" + 规则 2.1 | **规范明文** |
 | `DISCLAIM_PRICE` | `art-budget-chapter` | 规则 5.15"DISCLAIM_PRICE 必挂" | **规范明文** |
-| `GUIDE_SITE_CHECK` | `art-hydro-checklist`；**＋任何含"未过门定位数字"的页**（v2.4 新增，见下） | §7 原文"清单页头必含"（正文写死"水电交底当天"）；v2.4 挂载条件扩展的锚=规则 4.10c 原文"安全级话术（§7 锁定文案 `GUIDE_SITE_CHECK`/`DISCLAIM_P1`）本就是为这个场景准备的，与本条配套使用" | **规范明文** |
+| `GUIDE_SITE_CHECK` | `art-hydro-checklist`；**＋任何含"未过门定位数字"的页**（v2.4 新增，见下；此项待 `GUIDE_NUMBER_SITE_CHECK` 正文落表后移交） | §7 原文"清单页头必含"（正文写死"水电交底当天"）；v2.4 挂载条件扩展的锚=规则 4.10c 原文"安全级话术（§7 锁定文案 `GUIDE_SITE_CHECK`/`DISCLAIM_P1`）本就是为这个场景准备的，与本条配套使用" | **规范明文** |
+| `GUIDE_NUMBER_SITE_CHECK` | 任何含"未过门定位数字"的**正文页**（`provenance.annotationRequired` 且 `numberClass=locating`） | 规则 4.10c 配套话术 + 裁决 2026-08-29 晚（三问题处置②：正文另立新 ID） | 裁决明文，**正文待补录**——补录前求值线派生仍指 `GUIDE_SITE_CHECK` |
+| `GUIDE_CHECKLIST_SITE_CHECK` | `art-acceptance-checklist`、`art-quotation-checklist` | 规则 4.3 现场复核机制推广 + 裁决 2026-08-29（十六条⑮：推广新增一条 ID，不改原文案正文） | 裁决明文，**正文待补录**——补录前这两个产物无必挂现场复核话术 |
 | `ACK_MANDATORY_WAIVER` | 含 `tier-mandatory` 条目的清单族产物（`art-hydro-checklist` 等） | §7 + 规则 4.1 三层规则 | 规范明文（产物集合待随清单族落地收敛） |
 | `DISCLAIM_RENDER` | `art-space-render`、`art-walkthrough-video`、`art-material-mood`（`prec-concept`） | 规则 3.3"所有图纸必须包含…对应免责文案（§7）"＋ID 语义 | **推断，待裁** |
 | `SAFE_WALL_GENERAL` / `SAFE_WALL_SUSPECT` | `art-wall-structure`（安全级，`gen-locked`） | 规范 §3.1 该产物准确性=安全级、生成=gen-locked ＋ ID 语义 | **推断，待裁** |
@@ -53,19 +64,20 @@
 注：`GUIDE_SITE_CHECK` 正文写死"水电交底当天"，用于非水电章节时语境偏窄——它与下方待裁项①同源，
 一并由"推广是否新增 ID"的裁决收口；在新 ID 落表前，按规范 4.10c 原文用这一条。
 
-**两处待裁**（不替裁，登记在案）：
+**待裁项收口与遗留**：
 
-- `GUIDE_SITE_CHECK` 正文写死"水电交底当天"，而规则 4.3 把现场复核机制**推广至验收清单**。
-  推广到 `art-acceptance-checklist`/`art-quotation-checklist` 需要另一条文案（新 ID），
-  **不能改这条的正文**（只增不改）——是否新增由用户裁。
+- ~~`GUIDE_SITE_CHECK` 推广是否新增 ID~~ **已裁（2026-08-29）**：新增，且不改原文案正文——
+  落 `GUIDE_CHECKLIST_SITE_CHECK`（清单页头）与 `GUIDE_NUMBER_SITE_CHECK`（正文页数字），见上表。
 - 五条待补录项的必挂产物集，须待手册原文补录后连同用途一并复核；此前不得据本表推断项做强制校验。
+- **七条待补录正文同批走起草 + 法务**（五条手册项 + 两条新 ID）：手册原文找不到（裁决②），
+  法务过目后一次落表；落表前任何消费方只拿得到 ID。
 
 ## 运行时消费口径（谁把"要挂哪几条"传进来）
 
 | 环节 | 谁 | 做什么 |
 |---|---|---|
 | 求值线（project-svc 规则引擎） | 调用方按它在生成哪个 `art-` 传入 | 把本产物必挂的 ID 集放进**报告数据包** `lockedTextsByDomain`（`rulebook/report_data_package.schema.json`），与 `entitlement` 同机制——**规则引擎不持有产物清单** |
-| 求值线（同上） | 规则引擎自身**派生**（v2.4 新增） | 求值结果触发的必挂并入同一清单：未过门的**定位数字**落点（`numberClass=locating` 且 `provenance.annotationRequired`）所在域并入 `GUIDE_SITE_CHECK`（规则 4.10c「与现场复核话术配套使用」）。派生依据是**结构化落点属性**，不是从 `requirement` 自然语言抠 ID（后者是禁止项）；清单仍是成文线的唯一口径 |
+| 求值线（同上） | 规则引擎自身**派生**（v2.4 新增） | 求值结果触发的必挂并入同一清单：未过门的**定位数字**落点（`numberClass=locating` 且 `provenance.annotationRequired`）所在域并入 `GUIDE_SITE_CHECK`（规则 4.10c「与现场复核话术配套使用」）。派生依据是**结构化落点属性**，不是从 `requirement` 自然语言抠 ID（后者是禁止项）；清单仍是成文线的唯一口径。**指向待迁**：`GUIDE_NUMBER_SITE_CHECK` 正文落表后改指它（`RulebookEvaluator` 的常量），**落表前不许提前改**——新 ID 此刻无正文，改了就是派发一个渲染不出东西的 ID |
 | 成文线单元（reportgen `report-unit-compose`） | — | **原样透传**，不产出、不选择；写作 prompt 里连 ID 都不出现（规则 2.4 零生成） |
 | 页面装配（`report-page-assemble`） | 装配层 | 按要求把 ID 挂上页（`Page.lockedTextIds`）——**页/册级装配契约，不是卡片级写作约束** |
 | 册级校验（`report-book-check`） | 规则层（确定性） | 要求集 vs 挂载集，缺一条即 `gate-locked-text-missing`，渲染前拦住 |
