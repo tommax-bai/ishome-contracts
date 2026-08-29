@@ -1,0 +1,15 @@
+{
+  "$comment": "锁定文案机器可读投影（gen-locked 渲染层按 ID 逐字取正文）。与 locked_texts.md 同源，md 仍是叙事权威：正文、状态、挂载纪律以 md 为准，本文件只是它的数据形态，一致性由 scripts/check_locked_texts_sync.py 在 pre-push 强制。null = 正文待补录（渲染缺席并记录，禁任何人或 AI 补写——缺是少说，编是替企业作错误承诺）。本文件不编进 gen/ 生成代码：写作层的依赖面只含生成代码，正文对写作层保持结构性不可见。",
+  "texts": {
+    "DISCLAIM_P1": "本图为点位逻辑示意，标注为相对位置，不含施工坐标。具体尺寸与定位以现场交底、现场复核为准。本图纸为参考级设计产物，不构成施工指令。",
+    "GUIDE_SITE_CHECK": "请在水电交底当天，携带本清单与施工方逐项现场确认并勾选。",
+    "ACK_MANDATORY_WAIVER": "该项为国家标准/行业强制建议项。我已知悉风险，自主选择不执行。",
+    "SAFE_WALL_GENERAL": null,
+    "SAFE_WALL_SUSPECT": null,
+    "SAFE_LAYOUT_CHANGE": null,
+    "DISCLAIM_RENDER": null,
+    "DISCLAIM_PRICE": null,
+    "GUIDE_NUMBER_SITE_CHECK": null,
+    "GUIDE_CHECKLIST_SITE_CHECK": null
+  }
+}

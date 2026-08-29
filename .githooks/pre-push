@@ -8,4 +8,6 @@ echo "== pre-push: buf lint"
 buf lint
 echo "== pre-push: buf build"
 buf build
+echo "== pre-push: locked_texts md ↔ json 一致性"
+python3 scripts/check_locked_texts_sync.py
 echo "== pre-push: OK"
