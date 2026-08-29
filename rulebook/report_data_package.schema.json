@@ -71,7 +71,7 @@
         "required": ["lkpId", "name", "value", "basisTag", "calibration", "degraded", "presentation"],
         "additionalProperties": false
       },
-      "description": "落点对象：成文线数字字段唯一合法来源（正文禁裸数字，经 {lkp-*} 占位引用）"
+      "description": "落点对象：成文线数字字段唯一合法来源（正文禁裸数字，经 {lkp-*} 占位引用）。**两个来源**：①`parameters` 表的 lkp- 资产（求值或直取）；②`attributes` 表 `entity_type=work_item` 的单价资产**投影**（`attr-price-*` → `lkp-price-*`，规则 5.15 造价章：单价按匿名画像 `cityTier` 选档，`unit` 派生为 `元/{计价单位}`，`provenance.effectiveFrom/To` 取该资产的时效列——parameters 表没有这两列，故只有这条来源填得出时效）。两者在包内形态完全一致，消费侧不区分来源。"
     },
     "withheldAnchors": {
       "type": "array",
@@ -183,7 +183,8 @@
         "tallestHeightMm": { "type": ["integer", "null"] },
         "eyeHeightMm": { "type": ["integer", "null"] },
         "tvScreenHeightMm": { "type": ["integer", "null"] },
-        "layoutFeatures": { "type": "object", "additionalProperties": { "type": "string" }, "description": "estate 标注户型特征（规则 6.3 字段）" }
+        "layoutFeatures": { "type": "object", "additionalProperties": { "type": "string" }, "description": "estate 标注户型特征（规则 6.3 字段）" },
+        "cityTier": { "type": ["string", "null"], "description": "城市档（裁决 2026-08-29：**城市档是市场参数不是身份**——一个城市几十万住户，不具标识性；缺它则造价章要么失真要么哑火）。取值 = 单价资产 `props.breakdown` 的档名词面（如 `一线`/`二线`/`三四线`），**不另立一套 tier 枚举**：档名由数据自带，另立即规则 1.8 第四条的同概念两套名。求值线按逐字命中取该档区间，未命中或缺席取 `price_range`（全国粗档）——判定确定性、可重放。" }
       },
       "required": ["layoutFeatures"],
       "additionalProperties": false,

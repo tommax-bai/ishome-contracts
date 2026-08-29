@@ -99,6 +99,28 @@ attributes 表以 `entity_type` + JSONB `props` 承载异构实体，**不按实
 | `color` | `attributes/color.schema.json` | dom-softdeco | 色板卡（色值/冷暖/明度） |
 | `work_item` | `attributes/work_item.schema.json` | dom-budget | 工项单价区间（单位口径+时效，城市档） |
 
+### 7.1 work_item 单价 → lkp- 落点的投影（造价章，规则 5.15）
+
+单价资产是 `attr-`，报告正文的数字只能经 `{lkp-*}` 占位引用落点（§8 数字纪律），故求值线把
+**每条 `entity_type=work_item` 的单价资产投影为一个落点**。投影规则（求值线代码，全域一致，
+不逐条配置）：
+
+| 落点字段 | 取值 |
+|---|---|
+| `lkpId` | 资产 id 换前缀：`attr-price-demolition` → `lkp-price-demolition` |
+| `name` | 资产名原样（不加后缀，不改写） |
+| `unit` | `元/{props.unit}`——**单价的量纲是"元每计价单位"**，只给 `㎡` 会被读成面积 |
+| `value` | 按匿名画像 `cityTier` 逐字命中 `props.breakdown` 的档 → `{min,max}`；未命中或缺席 → `props.price_range`（全国粗档） |
+| `provenance.effectiveFrom/To` | 资产的 `effective_from/to` **表列**（props 内同名字段是导入镜像）——时效资产只有这一条来源，parameters 表没有这两列 |
+
+三条纪律：**只投影 work_item**（其余 entity_type 是描述性属性，不是数字落点）；**不跨口径换算**
+（元/点位 与 元/㎡ 并存，禁折算，见 work_item schema）；**`attr-` 与 `lkp-` 不是同概念两套名**
+（规则 1.8 第四条）——`attr-` 是单价库资产（全国/分档、带两源与时效），`lkp-` 是本户按城市档
+选出的那个区间，关系同 parameters 的"公式资产 → 代入匿名输入后的落点"。
+
+（连带：规范 §1.7 前缀表把 `lkp-` 的落点写作"parameters 表键"，本节起 lkp- 还有第二个来源，
+待规范文档批订正——**留对照不悄改**。）
+
 ## 8. 报告数据包（求值线 → 成文线契约）
 
 `report_data_package.schema.json`：求值线（project-svc 规则引擎）产物、成文线（reportgen
