@@ -40,11 +40,18 @@
 |---|---|---|---|
 | `DISCLAIM_P1` | `art-ceiling-lighting-plan`、`art-hydro-layout`（全部 `prec-schematic` 产物） | §7 原文"所有 prec-schematic 图纸图框必含" + 规则 2.1 | **规范明文** |
 | `DISCLAIM_PRICE` | `art-budget-chapter` | 规则 5.15"DISCLAIM_PRICE 必挂" | **规范明文** |
-| `GUIDE_SITE_CHECK` | `art-hydro-checklist` | §7 原文"清单页头必含"（正文写死"水电交底当天"） | **规范明文** |
+| `GUIDE_SITE_CHECK` | `art-hydro-checklist`；**＋任何含"未过门定位数字"的页**（v2.4 新增，见下） | §7 原文"清单页头必含"（正文写死"水电交底当天"）；v2.4 挂载条件扩展的锚=规则 4.10c 原文"安全级话术（§7 锁定文案 `GUIDE_SITE_CHECK`/`DISCLAIM_P1`）本就是为这个场景准备的，与本条配套使用" | **规范明文** |
 | `ACK_MANDATORY_WAIVER` | 含 `tier-mandatory` 条目的清单族产物（`art-hydro-checklist` 等） | §7 + 规则 4.1 三层规则 | 规范明文（产物集合待随清单族落地收敛） |
 | `DISCLAIM_RENDER` | `art-space-render`、`art-walkthrough-video`、`art-material-mood`（`prec-concept`） | 规则 3.3"所有图纸必须包含…对应免责文案（§7）"＋ID 语义 | **推断，待裁** |
 | `SAFE_WALL_GENERAL` / `SAFE_WALL_SUSPECT` | `art-wall-structure`（安全级，`gen-locked`） | 规范 §3.1 该产物准确性=安全级、生成=gen-locked ＋ ID 语义 | **推断，待裁** |
 | `SAFE_LAYOUT_CHANGE` | `art-plan-compare`、`art-plan-final`（**涉墙**版本） | 规则 5.6 原文"涉墙版本自动挂 SAFE_LAYOUT_CHANGE" | **规范明文**（挂载条件是逐版本的"涉不涉墙"，不是整个产物恒挂——由求值线判定后随包下发） |
+
+**v2.4 新增的挂载条件（2026-08-29 裁决，隐藏档取消）**：未过可核性门的定位数字原先一律隐藏（规则 4.10c v2.3 三条隐藏判据之一），
+现改为**照常进正文 + 同页标注依据 + 挂现场复核话术**。故 `GUIDE_SITE_CHECK` 的挂载条件从"产物是 `art-hydro-checklist`"
+扩展为"产物是 `art-hydro-checklist`**或**本页含未过门定位数字"——**挂载条件扩展不是改正文**（只增不改的射程是 ID 与正文，不是挂载条件）。
+`DISCLAIM_P1` 的同类配套在**图纸侧**（`prec-schematic` 图框，render2d 按同一 ID 挂载），成文线不经手。
+注：`GUIDE_SITE_CHECK` 正文写死"水电交底当天"，用于非水电章节时语境偏窄——它与下方待裁项①同源，
+一并由"推广是否新增 ID"的裁决收口；在新 ID 落表前，按规范 4.10c 原文用这一条。
 
 **两处待裁**（不替裁，登记在案）：
 
@@ -58,6 +65,7 @@
 | 环节 | 谁 | 做什么 |
 |---|---|---|
 | 求值线（project-svc 规则引擎） | 调用方按它在生成哪个 `art-` 传入 | 把本产物必挂的 ID 集放进**报告数据包** `lockedTextsByDomain`（`rulebook/report_data_package.schema.json`），与 `entitlement` 同机制——**规则引擎不持有产物清单** |
+| 求值线（同上） | 规则引擎自身**派生**（v2.4 新增） | 求值结果触发的必挂并入同一清单：未过门的**定位数字**落点（`numberClass=locating` 且 `provenance.annotationRequired`）所在域并入 `GUIDE_SITE_CHECK`（规则 4.10c「与现场复核话术配套使用」）。派生依据是**结构化落点属性**，不是从 `requirement` 自然语言抠 ID（后者是禁止项）；清单仍是成文线的唯一口径 |
 | 成文线单元（reportgen `report-unit-compose`） | — | **原样透传**，不产出、不选择；写作 prompt 里连 ID 都不出现（规则 2.4 零生成） |
 | 页面装配（`report-page-assemble`） | 装配层 | 按要求把 ID 挂上页（`Page.lockedTextIds`）——**页/册级装配契约，不是卡片级写作约束** |
 | 册级校验（`report-book-check`） | 规则层（确定性） | 要求集 vs 挂载集，缺一条即 `gate-locked-text-missing`，渲染前拦住 |
