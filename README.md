@@ -17,7 +17,7 @@
 | 路径 | 内容 |
 |---|---|
 | `proto/ishome/{domain}/v1/` | gRPC/protobuf 契约（common / channel / design 起步） |
-| `openapi/` | BFF REST 契约（snake_case 端到端） |
+| `openapi/` | REST 契约（snake_case 端到端）：BFF 对外面（`c-bff`/`admin-bff`）+ **服务间调用面**（`genpipe.v1.yaml` 报告成文线派发入口——跨语言那一跳，Java 生产报文 Python 消费，字段名对不上时两侧编译器都不报错） |
 | `glossary.md` | 领域术语中英对照（唯一真源） |
 | `events/registry.md` | CloudEvents 注册表（`com.ishome.{domain}.{entity}.{past-verb}`） |
 | `activities/registry.md` | Temporal activity 注册名（10 个，只增不改） |

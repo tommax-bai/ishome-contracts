@@ -1,0 +1,84 @@
+# genpipe-svc 服务间 REST 契约（成文线派发入口）
+# 纪律：JSON 字段 snake_case；URL 大版本；字段只增不删。
+#
+# 本文件与 openapi/ 下另两份的性质不同：那两份是 **BFF 对外面**，本份是 **服务间调用面**——
+# project-svc（求值线，Java）→ genpipe-svc（编排，Python）。它之所以必须进契约仓而不是留在两仓各自的
+# 代码里：这一跳是**跨语言**的（Java 生产报文、Python 消费），线上字段名对不上时两侧编译器都不报错，
+# 只在真跑时炸成"整包解析失败"。裁决④ 定的通道形态也在此留痕。
+openapi: 3.1.0
+info:
+  title: ishome genpipe 服务间 API
+  version: 0.1.0-dev
+  description: >-
+    生成编排入站面。报告成文线的派发入口在此：求值线（project-svc 规则引擎，同步、不进队列）
+    产出报告数据包后，经本接口交给编排侧启动 ReportComposeWorkflow。
+
+    裁决④（2026-08-29）：派发通道**走 HTTP 入口，不用 Java Temporal SDK 直连**——直连会把
+    里程碑引擎裁决刚收缩掉的 Temporal 依赖放回 Java 服务。
+servers:
+  - url: /api/v1/genpipe
+paths:
+  /reports:
+    post:
+      operationId: create_report_compose
+      summary: 派发一份报告数据包到成文线
+      description: >-
+        202 = 包已交给成文线，**不是**"报告好了"。成文是一次短 run，结论经回流写回里程碑
+        （状态真相不在编排侧，禁第二台状态机），不在本请求内等待。
+
+        幂等：`report_id` 由 **project-svc 铸造**（裁决③：幂等键必须在重试的那一侧）。
+        同一 `report_id` 在飞期间重复派发 → 409；调用方重试须带回同一个 `report_id`。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/report_compose_spec" }
+      responses:
+        "202":
+          description: 已受理，回编排侧定址
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/workflow_start_receipt" }
+        "409":
+          description: 同一 report_id 已在飞（重复派发）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/error" }
+components:
+  schemas:
+    report_compose_spec:
+      type: object
+      required: [report_id, domains, package]
+      properties:
+        report_id:
+          type: string
+          description: 本次生成的定址 id（project-svc 铸造的 ULID，26 字符）；workflow id 由其派生。
+        domains:
+          type: array
+          items: { type: string }
+          description: >-
+            本次派发的 dom- 单元集合，由求值线给出。**不从 package 里读**——包内 domains 是求值
+            范围，本字段是本次要成文的范围，两者可以不等。
+        package:
+          type: object
+          description: >-
+            报告数据包原样载荷。**字段是 camelCase**（schema 见本仓
+            `rulebook/report_data_package.schema.json`），与本请求体外层的 snake_case 并存：
+            外层是编排侧的模型字段名，内层是求值线的产物契约，两套命名同报文共存是有意的。
+            编排侧对它不透明——只搬运，不解包。
+        max_rewrites:
+          type: integer
+          default: 2
+          description: 单元出口过检不合格后的重写轮数上限（设计定数，生产调用方不传）。
+    workflow_start_receipt:
+      type: object
+      required: [workflow_id, run_id]
+      properties:
+        workflow_id: { type: string }
+        run_id:
+          type: string
+          description: 可能为空串（编排侧拿不到 run 号时）。空定址不代表派发失败。
+    error:
+      type: object
+      properties:
+        detail: { type: string }
