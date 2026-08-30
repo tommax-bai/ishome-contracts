@@ -22,3 +22,4 @@
 | 11 | `report-unit-compose` | `compose_report_unit` | 报告成文线·单元成文（图 v0.2 §3 单元子图整段：叙事推导→卡片写作→出口过检·规则层→重写 ≤2 轮→failed verdict 上抛）。**dom- 为参数不拆 activity**（规则 5.0c 一台引擎 N 域资产包）；输入=报告数据包本域切片（自包含，不回查库）；数字字段只能引用落点对象（`{lkp-*}` 占位，正文禁裸数字） | reportgen-svc 专用 |
 | 12 | `report-page-assemble` | `assemble_report_pages` | 报告成文线·页面装配（唯一知道"页"的节点，确定性；pt- 页型库待编译，首版按域成页） | reportgen-svc 专用 |
 | 13 | `report-book-check` | `check_report_book` | 报告成文线·册级校验（渲染前；册级 cr- 判据随 release 数据物化执行，首版为结构完整性检查） | reportgen-svc 专用 |
+| 14 | `report-book-render` | `render_report_book` | 报告渲染层·出册（册检通过后；pages + 报告数据包 → 单册自包含 HTML → 写私有对象存储，返回对象键）。**确定性、零 LLM**；对象键由 `report_id` 确定性派生，故"这份报告出没出册"问存储即知，不另立台账 | reportrender-svc 专用 |

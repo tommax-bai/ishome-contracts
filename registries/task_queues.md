@@ -15,3 +15,4 @@
 | `imagegen-activities` | imagegen-svc（ishome-imagegen） | `atmosphere-visual`、`realism-pass` | V1.4 裁决：生成式出图，外部模型 API / GPU 推理伸缩轴 |
 | `render3d-activities` | render3d-svc（ishome-render3d） | `scene-compile`、`base-render` | V1.4 裁决：三维管线，GPU + 三维引擎伸缩轴 |
 | `reportgen-activities` | reportgen-svc（ishome-reportgen） | `report-unit-compose`、`report-page-assemble`、`report-book-check` | 图 v0.2 §2/§8：报告两线拆分——求值线落 project-svc 规则引擎（同步，不进队列），成文线（gen-generated/gen-polished）落独立 worker，LLM 推理伸缩轴 |
+| `reportrender-activities` | reportrender-svc（ishome-reportrender） | `report-book-render` | 裁决 2026-08-29 的后半段兑现：渲染层"不成服务，以工具形式存在，**后续报告产出上线时建立服务**"——报告要交到真人手上，触发条件即此。确定性零 LLM，与成文线分队列是因为伸缩轴不同（渲染是 CPU + IO，成文是 LLM 推理） |
