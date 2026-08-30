@@ -5,18 +5,26 @@
   "type": "object",
   "properties": {
     "evaluatedOn": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date",
       "description": "本次求值的基准日（as-of）：时效越界（effectiveTo < evaluatedOn）的判定基准，随包下发故可重放——判定不看运行时时钟，看这个入参（规则 8.2 同输入同输出）。v2.4 新增；缺席=生产方未升级，消费侧不得自行取当天顶替。"
     },
     "entitlement": {
       "type": "string",
-      "enum": ["FREE", "PAID"],
+      "enum": [
+        "FREE",
+        "PAID"
+      ],
       "description": "本包服务的产物权益档（规范 §3.1 产物登记表权益列，由调用方按它在生成哪个 art- 传入——规则引擎不持有产物清单）。降档判定的唯一口径；一次求值只服务一个权益档，混档产物分两次求值。它是产物属性不是用户属性，不破匿名纪律。"
     },
     "domains": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "本包覆盖的知识域（去前缀形态，按字典序）"
     },
     "releases": {
@@ -24,10 +32,18 @@
       "items": {
         "type": "object",
         "properties": {
-          "domain": { "type": "string" },
-          "releaseTag": { "type": "string", "pattern": "^[a-z][a-z-]*@v[0-9]+$" }
+          "domain": {
+            "type": "string"
+          },
+          "releaseTag": {
+            "type": "string",
+            "pattern": "^[a-z][a-z-]*@v[0-9]+$"
+          }
         },
-        "required": ["domain", "releaseTag"],
+        "required": [
+          "domain",
+          "releaseTag"
+        ],
         "additionalProperties": false
       },
       "description": "消费的 release 引用集（版本锁定，规则 8.2；产物 lineage 记录同一集合）"
@@ -37,56 +53,185 @@
       "items": {
         "type": "object",
         "properties": {
-          "lkpId": { "type": "string", "pattern": "^lkp-" },
-          "name": { "type": "string" },
-          "numberClass": { "type": ["string", "null"], "enum": ["locating", "selection", "analysis", null] },
-          "unit": { "type": ["string", "null"] },
-          "value": { "type": "object", "description": "求值后数值包（min/max/v/分档键，异构）" },
-          "basisTag": { "type": "string", "description": "依据 release 引用" },
-          "source": { "type": ["string", "null"], "description": "推导可见的出处。**权威载体是 provenance.source**，本字段为 v2.4 之前的兼容投影（同值），只增不删故保留" },
-          "calibration": { "type": "string", "enum": ["draft", "calibrated", "needs_review"], "description": "同 provenance.calibration（兼容投影）" },
-          "degraded": { "type": "boolean", "description": "标记：未过可核性门（calibration != calibrated）。它**不等于** provenance.annotationRequired——后者还含时效越界" },
+          "lkpId": {
+            "type": "string",
+            "pattern": "^lkp-"
+          },
+          "name": {
+            "type": "string"
+          },
+          "numberClass": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "locating",
+              "selection",
+              "analysis",
+              null
+            ]
+          },
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "valueKind": {
+            "type": "string",
+            "enum": [
+              "single",
+              "range",
+              "scenario",
+              "tier",
+              "dimension",
+              "component",
+              "comparison"
+            ],
+            "description": "值的构成类别（规则 1.9，v2.8）。它同时判定三件事，**都不靠推断**：①`value` 的形态；②可否单项引用——`single`/`range` 只有一个匿名项，只能整条引用 `{lkp-x}`；其余五类可写 `{lkp-x.项名}`；③项名受哪个词表约束——`tier` 闭集 low/medium/high、`dimension` 闭集 depth/width/height、`comparison` 形态 `{高档}-vs-{低档}`、`scenario` 与 `component` 走受控词表（开集）。"
+          },
+          "value": {
+            "description": "落点的值。**两层模型（规则 1.9，v2.8）**：一条落点＝若干「项」，一项的值＝一个数或一个区间。形态由同级 `valueKind` 判定，消费侧按它分支、不靠推断键名：\n  · `single`   → 标量（一个匿名项，值是数）\n  · `range`    → `{min,max}`（一个匿名项，值是区间；单边界只给一侧）\n  · 其余五类  → 项名 → 标量 或 项名 → `{min,max}`（多项，各项值是数或区间）\n**`min`/`max` 不是项**，是项的值形态——故 `{lkp-x.min}` 这种引用在语法上不存在，「引一端丢掉另一端」由结构堵死而非纪律禁止。**元信息不进本字段**：单位见 `unit`、参考平面见 `referencePlane`——与项同层则「引用出一个单位字符串」是合法写法，约定管不住。",
+            "oneOf": [
+              {
+                "type": "number",
+                "description": "valueKind=single"
+              },
+              {
+                "type": "object",
+                "description": "valueKind=range 时是 {min,max}；其余类时是 项名 → 标量|{min,max}",
+                "minProperties": 1
+              }
+            ]
+          },
+          "basisTag": {
+            "type": "string",
+            "description": "依据 release 引用"
+          },
+          "source": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "推导可见的出处。**权威载体是 provenance.source**，本字段为 v2.4 之前的兼容投影（同值），只增不删故保留"
+          },
+          "calibration": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "calibrated",
+              "needs_review"
+            ],
+            "description": "同 provenance.calibration（兼容投影）"
+          },
+          "degraded": {
+            "type": "boolean",
+            "description": "标记：未过可核性门（calibration != calibrated）。它**不等于** provenance.annotationRequired——后者还含时效越界"
+          },
           "provenance": {
             "type": "object",
             "properties": {
-              "source": { "type": ["string", "null"], "description": "外部依据出处。**null = 经验条目**（规则 4.10「无外部依据、靠行业判断」）：这是事实不是缺失，标注照挂——渲染层据此说明这是经验判断，禁编造来源" },
-              "effectiveFrom": { "type": ["string", "null"], "format": "date", "description": "取数时间（时效资产必填，规则 4.10 治理头）；无时效的资产为 null" },
-              "effectiveTo": { "type": ["string", "null"], "format": "date", "description": "有效期止。已过 evaluatedOn 即时效越界——照常下发、标注取数时间（规则 4.10c/5.15，v2.4）" },
-              "calibration": { "type": "string", "enum": ["draft", "calibrated", "needs_review"] },
+              "source": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "外部依据出处。**null = 经验条目**（规则 4.10「无外部依据、靠行业判断」）：这是事实不是缺失，标注照挂——渲染层据此说明这是经验判断，禁编造来源"
+              },
+              "effectiveFrom": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date",
+                "description": "取数时间（时效资产必填，规则 4.10 治理头）；无时效的资产为 null"
+              },
+              "effectiveTo": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date",
+                "description": "有效期止。已过 evaluatedOn 即时效越界——照常下发、标注取数时间（规则 4.10c/5.15，v2.4）"
+              },
+              "calibration": {
+                "type": "string",
+                "enum": [
+                  "draft",
+                  "calibrated",
+                  "needs_review"
+                ]
+              },
               "annotationRequired": {
                 "type": "boolean",
                 "description": "**强制**：本落点进正文时同页必须挂依据标注（规则 4.10c 标注必挂）。判定在生产侧做完（draft 或 effectiveTo 已过 evaluatedOn），消费侧只执行不重判——与 presentation 同机制。它是 v2.4 取消隐藏档后纪律的落点：拦截点从「说出来」移到「不标就说」。"
               }
             },
-            "required": ["calibration", "annotationRequired"],
+            "required": [
+              "calibration",
+              "annotationRequired"
+            ],
             "additionalProperties": false,
             "description": "依据（规则 4.10c 标注必挂，v2.4 新增）：随落点下发的来源与时效，供成文线页级标注比对门禁与渲染层出标注。**缺席 = 生产方未升级**，消费侧按 calibration != calibrated 回退判定（宽进严查，方向偏严）。"
           },
           "presentation": {
             "type": "string",
-            "enum": ["THESIS_SUPPORT", "REFERENCE_ONLY"],
+            "enum": [
+              "THESIS_SUPPORT",
+              "REFERENCE_ONLY"
+            ],
             "description": "强制：语域判定结果（规则 4.10a/5.8）= calibration 是否过可核性门。THESIS_SUPPORT=可作判断句支点（断言预算唯一的背书来源）；REFERENCE_ONLY=语域限建议口吻（「我们建议…」，不冒充「国标要求」），**但照常进正文、可进主旨句**——条件是同页挂标注（provenance.annotationRequired）。v2.4 裁决 2026-08-29：隐藏档取消，entitlement 与值形态不再参与本判定（原 WITHHELD 判据作废）；本枚举从来只有两值，故契约形态不变。"
+          },
+          "referencePlane": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "参考平面及其高度（国标术语），如「0.75m 水平面」「化妆台 台面（混合照明）」。v2.8 前它挤在 `value` 里当一个键，与真正的项同层——元信息出 `value` 是规则 1.9 二的要求。无则 null。"
           }
         },
-        "required": ["lkpId", "name", "value", "basisTag", "calibration", "degraded", "presentation"],
+        "required": [
+          "lkpId",
+          "name",
+          "valueKind",
+          "value",
+          "basisTag",
+          "calibration",
+          "degraded",
+          "presentation"
+        ],
         "additionalProperties": false
       },
-      "description": "落点对象：成文线数字字段唯一合法来源（正文禁裸数字，经 {lkp-*} 占位引用）。**两个来源**：①`parameters` 表的 lkp- 资产（求值或直取）；②`attributes` 表 `entity_type=work_item` 的单价资产**投影**（`attr-price-*` → `lkp-price-*`，规则 5.15 造价章：单价按匿名画像 `cityTier` 选档，`unit` 派生为 `元/{计价单位}`，`provenance.effectiveFrom/To` 取该资产的时效列——parameters 表没有这两列，故只有这条来源填得出时效）。两者在包内形态完全一致，消费侧不区分来源。"
+      "description": "落点对象：成文线数字字段唯一合法来源（正文禁裸数字，经 {lkp-*} 占位引用）。**两个来源**：①`parameters` 表的 lkp- 资产（求值或直取）；②`attributes` 表 `entity_type=work_item` 的单价资产**投影**（`attr-price-*` → `lkp-price-*`，规则 5.15 造价章：单价按匿名画像 `cityTier` 选档，`unit` 派生为 `元/{计价单位}`，`provenance.effectiveFrom/To` 取该资产的时效列——parameters 表没有这两列，故只有这条来源填得出时效）。两者在包内形态完全一致，消费侧不区分来源。 **v2.8（规则 1.9）**：值改为两层模型，新增 `valueKind` 与 `referencePlane`；正文可引用某一项（`{lkp-x.项名}`），项名进标识符命名空间（ASCII 小写 kebab-case、只增不改、核验强制）。"
     },
     "withheldAnchors": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "lkpId": { "type": "string", "pattern": "^lkp-" },
-          "basisTag": { "type": "string", "description": "来源 release 引用（供审计定位到域与版本）" },
+          "lkpId": {
+            "type": "string",
+            "pattern": "^lkp-"
+          },
+          "basisTag": {
+            "type": "string",
+            "description": "来源 release 引用（供审计定位到域与版本）"
+          },
           "reason": {
             "type": "string",
-            "enum": ["locating_number", "no_range_form"],
+            "enum": [
+              "locating_number",
+              "no_range_form"
+            ],
             "description": "locating_number=定位数字无参考形态（规则 2.2/2.3）；no_range_form=值非区间形态，降不成参考级只出区间的说法（规则 5.8）"
           }
         },
-        "required": ["lkpId", "basisTag", "reason"],
+        "required": [
+          "lkpId",
+          "basisTag",
+          "reason"
+        ],
         "additionalProperties": false
       },
       "description": "**已作废，恒空数组**（v2.4 裁决 2026-08-29，规范 §14.9）：隐藏这一档取消——未校准与已过期资产照常进产物、随标注（规则 4.10c）。字段按「契约只增不删」保留，生产方恒发空数组，消费方不得据此拦截。原语义：按规则 4.10 隐藏的落点审计（只有 id 与原因）。原回流分工由 provenance（求出了但没依据）与 gaps（求不出）各自承载，不再需要第三个集合。"
@@ -96,11 +241,28 @@
       "items": {
         "type": "object",
         "properties": {
-          "lkpId": { "type": "string" },
-          "reason": { "type": "string", "enum": ["missing_input", "formula_not_implemented", "empty_definition"] },
-          "detail": { "type": ["string", "null"] }
+          "lkpId": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "missing_input",
+              "formula_not_implemented",
+              "empty_definition"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         },
-        "required": ["lkpId", "reason"],
+        "required": [
+          "lkpId",
+          "reason"
+        ],
         "additionalProperties": false
       },
       "description": "求值缺口（gap-）：随产物回流，不阻塞"
@@ -112,14 +274,34 @@
         "items": {
           "type": "object",
           "properties": {
-            "assetId": { "type": "string", "pattern": "^persona-" },
-            "identity": { "type": "string", "description": "语域身份（回路编译产物，非手册原文——规则 4.19）" },
-            "judgmentSamples": { "type": "array" },
-            "assertionBudget": { "type": "array", "description": "[{predicate, requires:[lkp-*]}]——判断句须 requires 已求值（规则 5.8）" },
-            "bannedTerms": { "type": "object", "description": "域内禁词（domain_extra 等；公共禁词在 bannedTermsByDomain）" },
-            "version": { "type": "integer" }
+            "assetId": {
+              "type": "string",
+              "pattern": "^persona-"
+            },
+            "identity": {
+              "type": "string",
+              "description": "语域身份（回路编译产物，非手册原文——规则 4.19）"
+            },
+            "judgmentSamples": {
+              "type": "array"
+            },
+            "assertionBudget": {
+              "type": "array",
+              "description": "[{predicate, requires:[lkp-*]}]——判断句须 requires 已求值（规则 5.8）"
+            },
+            "bannedTerms": {
+              "type": "object",
+              "description": "域内禁词（domain_extra 等；公共禁词在 bannedTermsByDomain）"
+            },
+            "version": {
+              "type": "integer"
+            }
           },
-          "required": ["assetId", "identity", "version"],
+          "required": [
+            "assetId",
+            "identity",
+            "version"
+          ],
           "additionalProperties": false
         }
       }
@@ -131,66 +313,270 @@
         "items": {
           "type": "object",
           "properties": {
-            "assetId": { "type": "string", "pattern": "^cr-" },
-            "checkType": { "type": "string" },
-            "scope": { "type": "array", "items": { "type": "string" } },
-            "pattern": { "type": ["string", "null"] },
-            "requirement": { "type": ["string", "null"] },
-            "message": { "type": "string" },
-            "decidedBy": { "type": "string", "description": "裁决记录锚（规则 4.10b，非空）" },
-            "thresholdRefs": { "type": "array", "items": { "type": "string" }, "description": "数值阈值只经 lkp- 引用" },
+            "assetId": {
+              "type": "string",
+              "pattern": "^cr-"
+            },
+            "checkType": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pattern": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "requirement": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "decidedBy": {
+              "type": "string",
+              "description": "裁决记录锚（规则 4.10b，非空）"
+            },
+            "thresholdRefs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "数值阈值只经 lkp- 引用"
+            },
             "examples": {
               "type": "array",
               "items": {
                 "type": "object",
                 "properties": {
-                  "bad": { "type": "string", "description": "真跑里模型写出的原句——只收观察到的样本，禁想象填充（规范 v2.3 §12）" },
-                  "why": { "type": "string", "description": "为什么它违反本条判据" },
-                  "fixed": { "type": "string", "description": "合规写法；给写作侧与回路看，不下发给判官（判官只报编号不改写）" }
+                  "bad": {
+                    "type": "string",
+                    "description": "真跑里模型写出的原句——只收观察到的样本，禁想象填充（规范 v2.3 §12）"
+                  },
+                  "why": {
+                    "type": "string",
+                    "description": "为什么它违反本条判据"
+                  },
+                  "fixed": {
+                    "type": "string",
+                    "description": "合规写法；给写作侧与回路看，不下发给判官（判官只报编号不改写）"
+                  }
                 },
-                "required": ["bad", "why", "fixed"],
+                "required": [
+                  "bad",
+                  "why",
+                  "fixed"
+                ],
                 "additionalProperties": false
               },
               "description": "判官反例样例（规则 4.17）：挂 cr- 判据之下、不建第三类命名空间（规则 4.10b）；样例是文本非阈值。缺省 []"
             },
             "status": {
               "type": "string",
-              "enum": ["observing", "active", "retired"],
+              "enum": [
+                "observing",
+                "active",
+                "retired"
+              ],
               "description": "入册状态（规则 4.17 门禁二）：observing 只记录不拦截 / active 命中即违规 / retired 停用留档。缺省 observing"
             },
-            "version": { "type": "integer" }
+            "version": {
+              "type": "integer"
+            }
           },
-          "required": ["assetId", "checkType", "message", "decidedBy", "version"],
+          "required": [
+            "assetId",
+            "checkType",
+            "message",
+            "decidedBy",
+            "version"
+          ],
           "additionalProperties": false
         }
       },
       "description": "cr- 判据（release 数据物化执行，不硬编码）：无 examples 者归规则层机检，examples 非空者归判官层（图 v0.2 §3）"
     },
+    "triggeredRulesByDomain": {
+      "type": "object",
+      "description": "本户触发的规则条目，按域分组（键＝去前缀域名，同 personasByDomain）。**新增字段、非必填**：消费侧先建、生产侧后发（同 provenance 那批的顺序纪律）；生产方未发时成文线按空处理，不得据此拦截。语义＝求值线按 trigger 判定后**已经成立**的规则，成文线不再判触发（同「成文线不重判求值线」）。触发类型首版只有 always 与 layout_feature；answer/light/switch 类随需求采集与清单族落地时扩展（只增不改）。**用途限定**：这些条目是「这一章该讲到什么」的输入，喂给叙事推导步定主张；**禁止逐字进写作 prompt 当句子抄**——规则 content 是内部陈述句，逐字下发会被照抄（示范句可抄性同病，坑单铁律一）。背书纪律不变：calibration=draft 的规则不构成判断句依据（断言预算只认 calibrated）。",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "assetId": {
+              "type": "string",
+              "pattern": "^rule-",
+              "description": "规则资产 id（语义命名，规则 1.7）"
+            },
+            "layer": {
+              "type": "string",
+              "enum": [
+                "tier-mandatory",
+                "tier-practice",
+                "tier-personal"
+              ],
+              "description": "规则库三层（§4.1）"
+            },
+            "content": {
+              "type": "string",
+              "description": "规则条目正文（内部陈述句，见上「用途限定」）"
+            },
+            "rationale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "为什么——供推导步组织主张，同样禁逐字照抄"
+            },
+            "severity": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "严重度词面，随数据自带不另立枚举"
+            },
+            "calibration": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "calibrated",
+                "needs_review"
+              ],
+              "description": "校准状态，语义同落点"
+            },
+            "triggeredBy": {
+              "type": "object",
+              "description": "触发依据，规则 4.3 可追溯性的户型侧对应物——报告里「因为你家阳台带家政位」的数据来源",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "always",
+                    "layout_feature"
+                  ]
+                },
+                "feature": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "layout_feature 触发时的标记名，取值闭集见 rulebook/layout_features.json"
+                },
+                "evidence": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "该标记成立的依据（人话，来自解析产出的特征值）；always 触发时为 null"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "assetId",
+            "layer",
+            "content",
+            "calibration",
+            "triggeredBy"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
     "bannedTermsByDomain": {
       "type": "object",
-      "additionalProperties": { "type": "array", "items": { "type": "string" } },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
       "description": "vocabulary(kind=banned_term) 平铺去重排序（公共禁词发布时已物化进各域）"
     },
     "lockedTextsByDomain": {
       "type": "object",
-      "additionalProperties": { "type": "array", "items": { "type": "string" }, "description": "锁定文案 ID（升序去重）" },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "锁定文案 ID（升序去重）"
+      },
       "description": "锁定清单（图 v0.2 §2）：本产物必挂的锁定文案 ID 集，枚举与挂载纪律见 ../registries/locked_texts.md。**只有 ID 没有正文**——gen-locked 的定义是引用 ID 直接渲染、零生成（规则 2.4），正文在渲染层按 ID 取，成文线看不到就拼接不出来。键为 dom- 去前缀形态：成文线不认识 art-（本包无产物字段，单元轴=dom-），art-→dom- 换算由调用方在求值前做完；要挂哪几条由调用方按它在生成哪个 art- 传入，与 entitlement 同机制（规则引擎不持有产物清单）。缺省/缺键=本产物无必挂文案（生产方未升级的旧包不误判）；该挂没挂由册级校验 report-book-check 报出。造价章即规则 5.15 的 DISCLAIM_PRICE 必挂。"
     },
     "anonymousProfile": {
       "type": "object",
       "properties": {
-        "chiefHeightMm": { "type": ["integer", "null"] },
-        "tallestHeightMm": { "type": ["integer", "null"] },
-        "eyeHeightMm": { "type": ["integer", "null"] },
-        "tvScreenHeightMm": { "type": ["integer", "null"] },
-        "layoutFeatures": { "type": "object", "additionalProperties": { "type": "string" }, "description": "estate 标注户型特征（规则 6.3 字段）" },
-        "cityTier": { "type": ["string", "null"], "description": "城市档（裁决 2026-08-29：**城市档是市场参数不是身份**——一个城市几十万住户，不具标识性；缺它则造价章要么失真要么哑火）。取值 = 单价资产 `props.breakdown` 的档名词面（如 `一线`/`二线`/`三四线`），**不另立一套 tier 枚举**：档名由数据自带，另立即规则 1.8 第四条的同概念两套名。求值线按逐字命中取该档区间，未命中或缺席取 `price_range`（全国粗档）——判定确定性、可重放。" }
+        "chiefHeightMm": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "tallestHeightMm": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "eyeHeightMm": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "tvScreenHeightMm": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "layoutFeatures": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "estate 标注户型特征（规则 6.3 字段）"
+        },
+        "cityTier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "城市档（裁决 2026-08-29：**城市档是市场参数不是身份**——一个城市几十万住户，不具标识性；缺它则造价章要么失真要么哑火）。取值 = 单价资产 `props.breakdown` 的档名词面（如 `一线`/`二线`/`三四线`），**不另立一套 tier 枚举**：档名由数据自带，另立即规则 1.8 第四条的同概念两套名。求值线按逐字命中取该档区间，未命中或缺席取 `price_range`（全国粗档）——判定确定性、可重放。"
+        }
       },
-      "required": ["layoutFeatures"],
+      "required": [
+        "layoutFeatures"
+      ],
       "additionalProperties": false,
       "description": "匿名画像：禁止任何用户/项目标识字段"
     }
   },
-  "required": ["entitlement", "domains", "releases", "anchors", "withheldAnchors", "gaps", "personasByDomain", "checksByDomain", "bannedTermsByDomain", "anonymousProfile"],
+  "required": [
+    "entitlement",
+    "domains",
+    "releases",
+    "anchors",
+    "withheldAnchors",
+    "gaps",
+    "personasByDomain",
+    "checksByDomain",
+    "bannedTermsByDomain",
+    "anonymousProfile"
+  ],
   "additionalProperties": false
 }
