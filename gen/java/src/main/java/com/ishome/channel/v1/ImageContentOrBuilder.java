@@ -45,4 +45,28 @@ public interface ImageContentOrBuilder extends
    * @return The heightPx.
    */
   int getHeightPx();
+
+  /**
+   * <pre>
+   * 私有桶里的对象键。入站：用户上传的图由渠道侧取下来落桶，此处填键——渠道方言的
+   * image_key/file_key 不进本字段（方言只在 adapter 与 raw_payload 里）。
+   * 键的形态是跨仓协议，真源在 registries/object_keys.md。
+   * </pre>
+   *
+   * <code>string object_key = 5 [json_name = "objectKey"];</code>
+   * @return The objectKey.
+   */
+  java.lang.String getObjectKey();
+  /**
+   * <pre>
+   * 私有桶里的对象键。入站：用户上传的图由渠道侧取下来落桶，此处填键——渠道方言的
+   * image_key/file_key 不进本字段（方言只在 adapter 与 raw_payload 里）。
+   * 键的形态是跨仓协议，真源在 registries/object_keys.md。
+   * </pre>
+   *
+   * <code>string object_key = 5 [json_name = "objectKey"];</code>
+   * @return The bytes for objectKey.
+   */
+  com.google.protobuf.ByteString
+      getObjectKeyBytes();
 }

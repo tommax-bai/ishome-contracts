@@ -57,6 +57,10 @@ message ImageContent {
   string mime_type = 2;
   uint32 width_px = 3;
   uint32 height_px = 4;
+  // 私有桶里的对象键。入站：用户上传的图由渠道侧取下来落桶，此处填键——渠道方言的
+  // image_key/file_key 不进本字段（方言只在 adapter 与 raw_payload 里）。
+  // 键的形态是跨仓协议，真源在 registries/object_keys.md。
+  string object_key = 5;
 }
 
 // 卡片 = 链接 + 预览（基础模型口径）。无卡片能力的渠道由策略引擎降级为纯链接文本。

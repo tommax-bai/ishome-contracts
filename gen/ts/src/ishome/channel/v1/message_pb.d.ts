@@ -157,6 +157,15 @@ export declare type ImageContent = Message<"ishome.channel.v1.ImageContent"> & {
    * @generated from field: uint32 height_px = 4;
    */
   heightPx: number;
+
+  /**
+   * 私有桶里的对象键。入站：用户上传的图由渠道侧取下来落桶，此处填键——渠道方言的
+   * image_key/file_key 不进本字段（方言只在 adapter 与 raw_payload 里）。
+   * 键的形态是跨仓协议，真源在 registries/object_keys.md。
+   *
+   * @generated from field: string object_key = 5;
+   */
+  objectKey: string;
 };
 
 /**

@@ -92,29 +92,30 @@ public final class MessageProto extends com.google.protobuf.GeneratedFile {
       "\037.ishome.channel.v1.AudioContentH\000R\005audi" +
       "o\0228\n\013raw_payload\030\024 \001(\0132\027.google.protobuf" +
       ".StructR\nrawPayloadB\t\n\007content\"!\n\013TextCo" +
-      "ntent\022\022\n\004text\030\001 \001(\tR\004text\"\200\001\n\014ImageConte" +
+      "ntent\022\022\n\004text\030\001 \001(\tR\004text\"\237\001\n\014ImageConte" +
       "nt\022\033\n\timage_url\030\001 \001(\tR\010imageUrl\022\033\n\tmime_" +
       "type\030\002 \001(\tR\010mimeType\022\031\n\010width_px\030\003 \001(\rR\007" +
-      "widthPx\022\033\n\theight_px\030\004 \001(\rR\010heightPx\"\214\001\n" +
-      "\013CardContent\022\024\n\005title\030\001 \001(\tR\005title\022 \n\013de" +
-      "scription\030\002 \001(\tR\013description\022\031\n\010link_url" +
-      "\030\003 \001(\tR\007linkUrl\022*\n\021preview_image_url\030\004 \001" +
-      "(\tR\017previewImageUrl\"\241\001\n\021QuickReplyConten" +
-      "t\022\037\n\013prompt_text\030\001 \001(\tR\npromptText\022=\n\007op" +
-      "tions\030\002 \003(\0132#.ishome.channel.v1.QuickRep" +
-      "lyOptionR\007options\022,\n\022selected_option_id\030" +
-      "\003 \001(\tR\020selectedOptionId\"E\n\020QuickReplyOpt" +
-      "ion\022\033\n\toption_id\030\001 \001(\tR\010optionId\022\024\n\005labe" +
-      "l\030\002 \001(\tR\005label\"i\n\014AudioContent\022\033\n\taudio_" +
-      "url\030\001 \001(\tR\010audioUrl\022\033\n\tmime_type\030\002 \001(\tR\010" +
-      "mimeType\022\037\n\013duration_ms\030\003 \001(\rR\ndurationM" +
-      "s*t\n\020MessageDirection\022!\n\035MESSAGE_DIRECTI" +
-      "ON_UNSPECIFIED\020\000\022\035\n\031MESSAGE_DIRECTION_IN" +
-      "BOUND\020\001\022\036\n\032MESSAGE_DIRECTION_OUTBOUND\020\002B" +
-      "\213\001\n\025com.ishome.channel.v1B\014MessageProtoP" +
-      "\001\242\002\003ICX\252\002\021Ishome.Channel.V1\312\002\021Ishome\\Cha" +
-      "nnel\\V1\342\002\035Ishome\\Channel\\V1\\GPBMetadata\352" +
-      "\002\023Ishome::Channel::V1b\006proto3"
+      "widthPx\022\033\n\theight_px\030\004 \001(\rR\010heightPx\022\035\n\n" +
+      "object_key\030\005 \001(\tR\tobjectKey\"\214\001\n\013CardCont" +
+      "ent\022\024\n\005title\030\001 \001(\tR\005title\022 \n\013description" +
+      "\030\002 \001(\tR\013description\022\031\n\010link_url\030\003 \001(\tR\007l" +
+      "inkUrl\022*\n\021preview_image_url\030\004 \001(\tR\017previ" +
+      "ewImageUrl\"\241\001\n\021QuickReplyContent\022\037\n\013prom" +
+      "pt_text\030\001 \001(\tR\npromptText\022=\n\007options\030\002 \003" +
+      "(\0132#.ishome.channel.v1.QuickReplyOptionR" +
+      "\007options\022,\n\022selected_option_id\030\003 \001(\tR\020se" +
+      "lectedOptionId\"E\n\020QuickReplyOption\022\033\n\top" +
+      "tion_id\030\001 \001(\tR\010optionId\022\024\n\005label\030\002 \001(\tR\005" +
+      "label\"i\n\014AudioContent\022\033\n\taudio_url\030\001 \001(\t" +
+      "R\010audioUrl\022\033\n\tmime_type\030\002 \001(\tR\010mimeType\022" +
+      "\037\n\013duration_ms\030\003 \001(\rR\ndurationMs*t\n\020Mess" +
+      "ageDirection\022!\n\035MESSAGE_DIRECTION_UNSPEC" +
+      "IFIED\020\000\022\035\n\031MESSAGE_DIRECTION_INBOUND\020\001\022\036" +
+      "\n\032MESSAGE_DIRECTION_OUTBOUND\020\002B\213\001\n\025com.i" +
+      "shome.channel.v1B\014MessageProtoP\001\242\002\003ICX\252\002" +
+      "\021Ishome.Channel.V1\312\002\021Ishome\\Channel\\V1\342\002" +
+      "\035Ishome\\Channel\\V1\\GPBMetadata\352\002\023Ishome:" +
+      ":Channel::V1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -140,7 +141,7 @@ public final class MessageProto extends com.google.protobuf.GeneratedFile {
     internal_static_ishome_channel_v1_ImageContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_ishome_channel_v1_ImageContent_descriptor,
-        new java.lang.String[] { "ImageUrl", "MimeType", "WidthPx", "HeightPx", });
+        new java.lang.String[] { "ImageUrl", "MimeType", "WidthPx", "HeightPx", "ObjectKey", });
     internal_static_ishome_channel_v1_CardContent_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_ishome_channel_v1_CardContent_fieldAccessorTable = new

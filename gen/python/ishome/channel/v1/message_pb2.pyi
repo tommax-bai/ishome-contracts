@@ -58,16 +58,18 @@ class TextContent(_message.Message):
     def __init__(self, text: _Optional[str] = ...) -> None: ...
 
 class ImageContent(_message.Message):
-    __slots__ = ("image_url", "mime_type", "width_px", "height_px")
+    __slots__ = ("image_url", "mime_type", "width_px", "height_px", "object_key")
     IMAGE_URL_FIELD_NUMBER: _ClassVar[int]
     MIME_TYPE_FIELD_NUMBER: _ClassVar[int]
     WIDTH_PX_FIELD_NUMBER: _ClassVar[int]
     HEIGHT_PX_FIELD_NUMBER: _ClassVar[int]
+    OBJECT_KEY_FIELD_NUMBER: _ClassVar[int]
     image_url: str
     mime_type: str
     width_px: int
     height_px: int
-    def __init__(self, image_url: _Optional[str] = ..., mime_type: _Optional[str] = ..., width_px: _Optional[int] = ..., height_px: _Optional[int] = ...) -> None: ...
+    object_key: str
+    def __init__(self, image_url: _Optional[str] = ..., mime_type: _Optional[str] = ..., width_px: _Optional[int] = ..., height_px: _Optional[int] = ..., object_key: _Optional[str] = ...) -> None: ...
 
 class CardContent(_message.Message):
     __slots__ = ("title", "description", "link_url", "preview_image_url")
