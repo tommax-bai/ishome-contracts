@@ -1,0 +1,95 @@
+{
+  "$comment": "落点项名受控词表的机器可读投影（规则 1.9 三，规范 v2.8）。与 anchor_items.md 同源，md 仍是叙事权威：语义、首次出处、归类理由以 md 为准，本文件只是它的数据形态。每条登记三件：`label`（渲染层并列多项时印在数字前的展示名，短）、`semantics`（叙事说明，长）、`first_seen`（首次出处）。**展示名是本表的一列，不在渲染层另存一份**——开集词表长出新词时只改本表，渲染层拿它当输入（同锁定文案 `--locked-texts` 的既有形态）。消费方=ishome-backend scripts/rulebook/verify_seeds.py：种子里 valueKind=scenario|component 的项名不在本表内即拒灌（exit 1）。只登记开集两类——tier（low|medium|high）与 dimension（depth|width|height）是闭集、comparison 是形态受控（{高档}-vs-{低档}），三者写在规范里，新增取值即改规范，不进本表。项名只增不改：它逐字进报告正文的记号，改名等同于改线上协议。本文件不编进 gen/ 生成代码。",
+  "item_name_pattern": "^[a-z][a-z0-9-]*$",
+  "items": {
+    "scenario": {
+      "general": {
+        "label": "一般活动",
+        "semantics": "一般活动（非特定作业时的日常照度口径）",
+        "first_seen": "lighting/lkp-illuminance-living"
+      },
+      "reading": {
+        "label": "书写阅读",
+        "semantics": "书写阅读",
+        "first_seen": "lighting/lkp-illuminance-living"
+      },
+      "task": {
+        "label": "操作台",
+        "semantics": "操作台作业（厨房备餐面一类的作业面）",
+        "first_seen": "lighting/lkp-illuminance-kitchen"
+      },
+      "vanity": {
+        "label": "化妆台",
+        "semantics": "化妆台",
+        "first_seen": "lighting/lkp-illuminance-bath"
+      }
+    },
+    "component": {
+      "demolition": {
+        "label": "拆改",
+        "semantics": "拆改",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "plumbing-electrical": {
+        "label": "水电",
+        "semantics": "水电",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "masonry-carpentry": {
+        "label": "泥木",
+        "semantics": "泥木（泥工+木工，源生合并口径）",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "painting": {
+        "label": "油漆",
+        "semantics": "油漆",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "main-material": {
+        "label": "主材",
+        "semantics": "主材",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "custom-cabinetry": {
+        "label": "定制",
+        "semantics": "定制（定制柜体）",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "soft-furnishing": {
+        "label": "软装",
+        "semantics": "软装",
+        "first_seen": "budget/lkp-budget-share"
+      },
+      "hang": {
+        "label": "悬挂",
+        "semantics": "挂放区（衣柜）",
+        "first_seen": "storage/lkp-wardrobe-hang-fold-ratio"
+      },
+      "fold": {
+        "label": "叠放",
+        "semantics": "叠放区（衣柜）",
+        "first_seen": "storage/lkp-wardrobe-hang-fold-ratio"
+      },
+      "drawer": {
+        "label": "抽屉",
+        "semantics": "抽屉区（衣柜）",
+        "first_seen": "storage/lkp-wardrobe-hang-fold-ratio"
+      },
+      "main": {
+        "label": "主色",
+        "semantics": "主色",
+        "first_seen": "softdeco/lkp-color-ratio"
+      },
+      "secondary": {
+        "label": "辅色",
+        "semantics": "辅色",
+        "first_seen": "softdeco/lkp-color-ratio"
+      },
+      "accent": {
+        "label": "点缀色",
+        "semantics": "点缀色",
+        "first_seen": "softdeco/lkp-color-ratio"
+      }
+    }
+  }
+}
