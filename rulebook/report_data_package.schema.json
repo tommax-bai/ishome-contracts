@@ -575,6 +575,20 @@
             "null"
           ],
           "description": "城市档（裁决 2026-08-29：**城市档是市场参数不是身份**——一个城市几十万住户，不具标识性；缺它则造价章要么失真要么哑火）。取值 = 单价资产 `props.breakdown` 的档名词面（如 `一线`/`二线`/`三四线`），**不另立一套 tier 枚举**：档名由数据自带，另立即规则 1.8 第四条的同概念两套名。求值线按逐字命中取该档区间，未命中或缺席取 `price_range`（全国粗档）——判定确定性、可重放。"
+        },
+        "buildingAreaSqm": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "建筑面积（㎡）。**房屋属性不是身份**（同 cityTier 的裁决口径），且是业主自己就知道的事实——购房合同上就有，会话侧本来就在收（floorplan/building_area_sqm）。与 floorAreaRatioPercent 合起来得出套内面积，那是报告里一切「量」的地基：2026-08-31 真跑实测，造价章有五条 calibrated 单价却算不出任何总价、收纳章说不出全屋要多少米收纳——缺的从来不是单价，是量。"
+        },
+        "floorAreaRatioPercent": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "得房率（百分数的数字，如 81）。取百分数而非小数：与会话侧收集形态逐字一致（floorplan/floor_area_ratio，unit=percent），少一层换算就少一处会漂移的口径。套内面积 = buildingAreaSqm × floorAreaRatioPercent / 100，缺任一项则不算、如实记 gap-（missing_input），**不猜**。"
         }
       },
       "required": [
