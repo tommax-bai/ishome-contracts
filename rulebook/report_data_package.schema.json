@@ -244,6 +244,10 @@
           "lkpId": {
             "type": "string"
           },
+          "basisTag": {
+            "type": "string",
+            "description": "这条缺口属于哪个域的哪一版（`{domain}@v{n}`），与落点 basisTag 同一口径——消费侧按它切本域缺口"
+          },
           "reason": {
             "type": "string",
             "enum": [
@@ -261,11 +265,12 @@
         },
         "required": [
           "lkpId",
+          "basisTag",
           "reason"
         ],
         "additionalProperties": false
       },
-      "description": "求值缺口（gap-）：随产物回流，不阻塞"
+      "description": "求值缺口（gap-）：随产物回流，不阻塞。**带 basisTag**——2026-08-31 第一次六章整册真跑暴露：缺口没有域，成文线把整册缺口原样发给每一章，各章替别的章写坦白卡（同一条缺口在四章各说一遍，且 storage 的缺口把「延米」带进了 softdeco 正文）"
     },
     "personasByDomain": {
       "type": "object",

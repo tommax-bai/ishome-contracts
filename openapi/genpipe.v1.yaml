@@ -70,6 +70,14 @@ components:
           type: integer
           default: 2
           description: 单元出口过检不合格后的重写轮数上限（设计定数，生产调用方不传）。
+        max_unit_retries:
+          type: integer
+          default: 2
+          description: >-
+            某章终判 failed 后允许的**整章重开**次数上限（编排侧旋钮，生产调用方不传）。
+            与 `max_rewrites` 是两个旋钮：那个是 activity 章内的自我修正轮数；这个是章内轮数
+            耗尽、整章 failed 之后，编排侧拿同样入参另起一次派发。用户裁决 2026-08-31：
+            「失败让重开……单独开失败的这一张就可以了」。
     workflow_start_receipt:
       type: object
       required: [workflow_id, run_id]
