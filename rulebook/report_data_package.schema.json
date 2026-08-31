@@ -506,6 +506,19 @@
       },
       "description": "vocabulary(kind=banned_term) 平铺去重排序（公共禁词发布时已物化进各域）"
     },
+    "bannedTermGroupsByDomain": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "同一批禁词按**为什么禁**分组（域 → 组名 → 词面）。组名来自种子：weak（软话）/methodology（谈流程与来历）/overreach（对结果打包票）/responsibility（划责任）/jargon（业主读不懂的工程词）/domain_extra（本域自定、未分组）。bannedTermsByDomain 的平表是它的并集，两者恒一致；平表**不删**——扫描与守卫要的是平表，分组只供打回话与 prompt 分句用。组名未知时消费侧退回通用打回话，故本字段可缺省、加组不破消费。"
+    },
     "lockedTextsByDomain": {
       "type": "object",
       "additionalProperties": {
