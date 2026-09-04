@@ -17,10 +17,10 @@
 | 路径 | 内容 |
 |---|---|
 | `proto/ishome/{domain}/v1/` | gRPC/protobuf 契约（common / channel / design 起步） |
-| `openapi/` | REST 契约（snake_case 端到端）：BFF 对外面（`c-bff`/`admin-bff`）+ **服务间调用面**（`genpipe.v1.yaml` 报告成文线派发入口——跨语言那一跳，Java 生产报文 Python 消费，字段名对不上时两侧编译器都不报错） |
+| `openapi/` | REST 契约（snake_case 端到端）：BFF 对外面（`c-bff`/`admin-bff`）+ **服务间调用面**（`genpipe.v1.yaml` 报告成文线与三张图派发入口；`project.v1.yaml` 业务事实入口与生成任务结果回流——都是跨语言那一跳，Java↔Python，字段名对不上时两侧编译器都不报错） |
 | `glossary.md` | 领域术语中英对照（唯一真源） |
 | `events/registry.md` | CloudEvents 注册表（`com.ishome.{domain}.{entity}.{past-verb}`） |
-| `activities/registry.md` | Temporal activity 注册名（10 个，只增不改） |
+| `activities/registry.md` | Temporal activity 注册名（只增不改） |
 | `errors/registry.md` | 错误码注册表（`{DOMAIN}_{3位}`） |
 | `registries/` | 变化轴注册表（渠道、模板、规则、打分器、轴索引）、任务队列注册表、**报告产物注册表**（`artifacts.md`，art-）、**锁定文案 ID 注册表**（`locked_texts.md`，gen-locked 枚举 + 产物必挂映射） |
 | `rulebook/` | svc_rulebook 知识资产契约面：dom-/form/gen-/prec- 枚举、release 引用格式、attributes entity_type JSONSchema（只进契约不进内容，规范 v2.2 规则 4.12） |

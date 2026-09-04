@@ -171,6 +171,37 @@ public final class DesignServiceGrpc {
     return getListProjectsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.ishome.design.v1.PresentDeliverablesRequest,
+      com.ishome.design.v1.PresentDeliverablesResponse> getPresentDeliverablesMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PresentDeliverables",
+      requestType = com.ishome.design.v1.PresentDeliverablesRequest.class,
+      responseType = com.ishome.design.v1.PresentDeliverablesResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.ishome.design.v1.PresentDeliverablesRequest,
+      com.ishome.design.v1.PresentDeliverablesResponse> getPresentDeliverablesMethod() {
+    io.grpc.MethodDescriptor<com.ishome.design.v1.PresentDeliverablesRequest, com.ishome.design.v1.PresentDeliverablesResponse> getPresentDeliverablesMethod;
+    if ((getPresentDeliverablesMethod = DesignServiceGrpc.getPresentDeliverablesMethod) == null) {
+      synchronized (DesignServiceGrpc.class) {
+        if ((getPresentDeliverablesMethod = DesignServiceGrpc.getPresentDeliverablesMethod) == null) {
+          DesignServiceGrpc.getPresentDeliverablesMethod = getPresentDeliverablesMethod =
+              io.grpc.MethodDescriptor.<com.ishome.design.v1.PresentDeliverablesRequest, com.ishome.design.v1.PresentDeliverablesResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PresentDeliverables"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ishome.design.v1.PresentDeliverablesRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ishome.design.v1.PresentDeliverablesResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new DesignServiceMethodDescriptorSupplier("PresentDeliverables"))
+              .build();
+        }
+      }
+    }
+    return getPresentDeliverablesMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -286,6 +317,19 @@ public final class DesignServiceGrpc {
         io.grpc.stub.StreamObserver<com.ishome.design.v1.ListProjectsResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListProjectsMethod(), responseObserver);
     }
+
+    /**
+     * <pre>
+     * 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+     * chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+     * 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+     * 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+     * </pre>
+     */
+    default void presentDeliverables(com.ishome.design.v1.PresentDeliverablesRequest request,
+        io.grpc.stub.StreamObserver<com.ishome.design.v1.PresentDeliverablesResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPresentDeliverablesMethod(), responseObserver);
+    }
   }
 
   /**
@@ -376,6 +420,20 @@ public final class DesignServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getListProjectsMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+     * chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+     * 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+     * 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+     * </pre>
+     */
+    public void presentDeliverables(com.ishome.design.v1.PresentDeliverablesRequest request,
+        io.grpc.stub.StreamObserver<com.ishome.design.v1.PresentDeliverablesResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPresentDeliverablesMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -446,6 +504,19 @@ public final class DesignServiceGrpc {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getListProjectsMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+     * chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+     * 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+     * 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+     * </pre>
+     */
+    public com.ishome.design.v1.PresentDeliverablesResponse presentDeliverables(com.ishome.design.v1.PresentDeliverablesRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPresentDeliverablesMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -515,6 +586,19 @@ public final class DesignServiceGrpc {
     public com.ishome.design.v1.ListProjectsResponse listProjects(com.ishome.design.v1.ListProjectsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getListProjectsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+     * chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+     * 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+     * 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+     * </pre>
+     */
+    public com.ishome.design.v1.PresentDeliverablesResponse presentDeliverables(com.ishome.design.v1.PresentDeliverablesRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPresentDeliverablesMethod(), getCallOptions(), request);
     }
   }
 
@@ -591,6 +675,20 @@ public final class DesignServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getListProjectsMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+     * chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+     * 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+     * 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ishome.design.v1.PresentDeliverablesResponse> presentDeliverables(
+        com.ishome.design.v1.PresentDeliverablesRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPresentDeliverablesMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_INGEST_MESSAGE = 0;
@@ -598,6 +696,7 @@ public final class DesignServiceGrpc {
   private static final int METHODID_SUBMIT_PATCH = 2;
   private static final int METHODID_GET_PROJECT = 3;
   private static final int METHODID_LIST_PROJECTS = 4;
+  private static final int METHODID_PRESENT_DELIVERABLES = 5;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -635,6 +734,10 @@ public final class DesignServiceGrpc {
         case METHODID_LIST_PROJECTS:
           serviceImpl.listProjects((com.ishome.design.v1.ListProjectsRequest) request,
               (io.grpc.stub.StreamObserver<com.ishome.design.v1.ListProjectsResponse>) responseObserver);
+          break;
+        case METHODID_PRESENT_DELIVERABLES:
+          serviceImpl.presentDeliverables((com.ishome.design.v1.PresentDeliverablesRequest) request,
+              (io.grpc.stub.StreamObserver<com.ishome.design.v1.PresentDeliverablesResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -689,6 +792,13 @@ public final class DesignServiceGrpc {
               com.ishome.design.v1.ListProjectsRequest,
               com.ishome.design.v1.ListProjectsResponse>(
                 service, METHODID_LIST_PROJECTS)))
+        .addMethod(
+          getPresentDeliverablesMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.ishome.design.v1.PresentDeliverablesRequest,
+              com.ishome.design.v1.PresentDeliverablesResponse>(
+                service, METHODID_PRESENT_DELIVERABLES)))
         .build();
   }
 
@@ -742,6 +852,7 @@ public final class DesignServiceGrpc {
               .addMethod(getSubmitPatchMethod())
               .addMethod(getGetProjectMethod())
               .addMethod(getListProjectsMethod())
+              .addMethod(getPresentDeliverablesMethod())
               .build();
         }
       }

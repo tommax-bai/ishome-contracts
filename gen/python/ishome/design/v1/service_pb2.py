@@ -24,10 +24,11 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 from ishome.channel.v1 import message_pb2 as ishome_dot_channel_dot_v1_dot_message__pb2
+from ishome.common.v1 import channel_type_pb2 as ishome_dot_common_dot_v1_dot_channel__type__pb2
 from ishome.design.v1 import types_pb2 as ishome_dot_design_dot_v1_dot_types__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1eishome/design/v1/service.proto\x12\x10ishome.design.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fishome/channel/v1/message.proto\x1a\x1cishome/design/v1/types.proto\"S\n\x14IngestMessageRequest\x12;\n\x07message\x18\x01 \x01(\x0b\x32!.ishome.channel.v1.UnifiedMessageR\x07message\"6\n\x15IngestMessageResponse\x12\x1d\n\nmessage_id\x18\x01 \x01(\tR\tmessageId\"\x80\x01\n\x19SubmitConfirmationRequest\x12\x1d\n\nproject_id\x18\x01 \x01(\tR\tprojectId\x12\x44\n\tdecisions\x18\x02 \x03(\x0b\x32&.ishome.design.v1.ConfirmationDecisionR\tdecisions\"\xa6\x01\n\x14\x43onfirmationDecision\x12\x17\n\x07item_id\x18\x01 \x01(\tR\x06itemId\x12<\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32$.ishome.design.v1.ConfirmationActionR\x06\x61\x63tion\x12\x37\n\ncorrection\x18\x03 \x01(\x0b\x32\x17.google.protobuf.StructR\ncorrection\"D\n\x1aSubmitConfirmationResponse\x12&\n\x0fopen_item_count\x18\x01 \x01(\x05R\ropenItemCount\"\x87\x01\n\x12SubmitPatchRequest\x12\x1d\n\nproject_id\x18\x01 \x01(\tR\tprojectId\x12#\n\rbase_revision\x18\x02 \x01(\x03R\x0c\x62\x61seRevision\x12-\n\x05patch\x18\x03 \x01(\x0b\x32\x17.ishome.design.v1.PatchR\x05patch\"8\n\x13SubmitPatchResponse\x12!\n\x0cnew_revision\x18\x01 \x01(\x03R\x0bnewRevision\"2\n\x11GetProjectRequest\x12\x1d\n\nproject_id\x18\x01 \x01(\tR\tprojectId\"P\n\x12GetProjectResponse\x12:\n\x07project\x18\x01 \x01(\x0b\x32 .ishome.design.v1.ProjectSummaryR\x07project\"j\n\x13ListProjectsRequest\x12\x17\n\x07user_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n\tpage_size\x18\x02 \x01(\x05R\x08pageSize\x12\x1d\n\npage_token\x18\x03 \x01(\tR\tpageToken\"|\n\x14ListProjectsResponse\x12<\n\x08projects\x18\x01 \x03(\x0b\x32 .ishome.design.v1.ProjectSummaryR\x08projects\x12&\n\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken*\x7f\n\x12\x43onfirmationAction\x12#\n\x1f\x43ONFIRMATION_ACTION_UNSPECIFIED\x10\x00\x12!\n\x1d\x43ONFIRMATION_ACTION_CONFIRMED\x10\x01\x12!\n\x1d\x43ONFIRMATION_ACTION_CORRECTED\x10\x02\x32\xf6\x03\n\rDesignService\x12`\n\rIngestMessage\x12&.ishome.design.v1.IngestMessageRequest\x1a\'.ishome.design.v1.IngestMessageResponse\x12o\n\x12SubmitConfirmation\x12+.ishome.design.v1.SubmitConfirmationRequest\x1a,.ishome.design.v1.SubmitConfirmationResponse\x12Z\n\x0bSubmitPatch\x12$.ishome.design.v1.SubmitPatchRequest\x1a%.ishome.design.v1.SubmitPatchResponse\x12W\n\nGetProject\x12#.ishome.design.v1.GetProjectRequest\x1a$.ishome.design.v1.GetProjectResponse\x12]\n\x0cListProjects\x12%.ishome.design.v1.ListProjectsRequest\x1a&.ishome.design.v1.ListProjectsResponseB\x86\x01\n\x14\x63om.ishome.design.v1B\x0cServiceProtoP\x01\xa2\x02\x03IDX\xaa\x02\x10Ishome.Design.V1\xca\x02\x10Ishome\\Design\\V1\xe2\x02\x1cIshome\\Design\\V1\\GPBMetadata\xea\x02\x12Ishome::Design::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1eishome/design/v1/service.proto\x12\x10ishome.design.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fishome/channel/v1/message.proto\x1a#ishome/common/v1/channel_type.proto\x1a\x1cishome/design/v1/types.proto\"S\n\x14IngestMessageRequest\x12;\n\x07message\x18\x01 \x01(\x0b\x32!.ishome.channel.v1.UnifiedMessageR\x07message\"6\n\x15IngestMessageResponse\x12\x1d\n\nmessage_id\x18\x01 \x01(\tR\tmessageId\"\x80\x01\n\x19SubmitConfirmationRequest\x12\x1d\n\nproject_id\x18\x01 \x01(\tR\tprojectId\x12\x44\n\tdecisions\x18\x02 \x03(\x0b\x32&.ishome.design.v1.ConfirmationDecisionR\tdecisions\"\xa6\x01\n\x14\x43onfirmationDecision\x12\x17\n\x07item_id\x18\x01 \x01(\tR\x06itemId\x12<\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32$.ishome.design.v1.ConfirmationActionR\x06\x61\x63tion\x12\x37\n\ncorrection\x18\x03 \x01(\x0b\x32\x17.google.protobuf.StructR\ncorrection\"D\n\x1aSubmitConfirmationResponse\x12&\n\x0fopen_item_count\x18\x01 \x01(\x05R\ropenItemCount\"\x87\x01\n\x12SubmitPatchRequest\x12\x1d\n\nproject_id\x18\x01 \x01(\tR\tprojectId\x12#\n\rbase_revision\x18\x02 \x01(\x03R\x0c\x62\x61seRevision\x12-\n\x05patch\x18\x03 \x01(\x0b\x32\x17.ishome.design.v1.PatchR\x05patch\"8\n\x13SubmitPatchResponse\x12!\n\x0cnew_revision\x18\x01 \x01(\x03R\x0bnewRevision\"2\n\x11GetProjectRequest\x12\x1d\n\nproject_id\x18\x01 \x01(\tR\tprojectId\"P\n\x12GetProjectResponse\x12:\n\x07project\x18\x01 \x01(\x0b\x32 .ishome.design.v1.ProjectSummaryR\x07project\"j\n\x13ListProjectsRequest\x12\x17\n\x07user_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n\tpage_size\x18\x02 \x01(\x05R\x08pageSize\x12\x1d\n\npage_token\x18\x03 \x01(\tR\tpageToken\"|\n\x14ListProjectsResponse\x12<\n\x08projects\x18\x01 \x03(\x0b\x32 .ishome.design.v1.ProjectSummaryR\x08projects\x12&\n\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xaa\x01\n\x11\x43onversationOwner\x12@\n\x0c\x63hannel_type\x18\x01 \x01(\x0e\x32\x1d.ishome.common.v1.ChannelTypeR\x0b\x63hannelType\x12)\n\x10\x63hannel_instance\x18\x02 \x01(\tR\x0f\x63hannelInstance\x12(\n\x10\x65xternal_user_id\x18\x03 \x01(\tR\x0e\x65xternalUserId\"\x8c\x01\n\x0b\x44\x65liverable\x12\x1f\n\x0b\x61rtifact_id\x18\x01 \x01(\tR\nartifactId\x12#\n\rartifact_type\x18\x02 \x01(\tR\x0c\x61rtifactType\x12\x1d\n\nobject_key\x18\x03 \x01(\tR\tobjectKey\x12\x18\n\x07\x63\x61ption\x18\x04 \x01(\tR\x07\x63\x61ption\"\\\n\x11GenerationFailure\x12\x12\n\x04\x63ode\x18\x01 \x01(\tR\x04\x63ode\x12\x16\n\x06\x64\x65tail\x18\x02 \x01(\tR\x06\x64\x65tail\x12\x1b\n\ttask_type\x18\x03 \x01(\tR\x08taskType\"\x99\x02\n\x1aPresentDeliverablesRequest\x12\x1f\n\x0b\x64\x65livery_id\x18\x01 \x01(\tR\ndeliveryId\x12\x1d\n\nproject_id\x18\x02 \x01(\tR\tprojectId\x12\x39\n\x05owner\x18\x03 \x01(\x0b\x32#.ishome.design.v1.ConversationOwnerR\x05owner\x12\x41\n\x0c\x64\x65liverables\x18\x04 \x03(\x0b\x32\x1d.ishome.design.v1.DeliverableR\x0c\x64\x65liverables\x12=\n\x07\x66\x61ilure\x18\x05 \x01(\x0b\x32#.ishome.design.v1.GenerationFailureR\x07\x66\x61ilure\"\\\n\x1bPresentDeliverablesResponse\x12\x1c\n\tdelivered\x18\x01 \x01(\x08R\tdelivered\x12\x1f\n\x0bmessage_ids\x18\x02 \x03(\tR\nmessageIds*\x7f\n\x12\x43onfirmationAction\x12#\n\x1f\x43ONFIRMATION_ACTION_UNSPECIFIED\x10\x00\x12!\n\x1d\x43ONFIRMATION_ACTION_CONFIRMED\x10\x01\x12!\n\x1d\x43ONFIRMATION_ACTION_CORRECTED\x10\x02\x32\xea\x04\n\rDesignService\x12`\n\rIngestMessage\x12&.ishome.design.v1.IngestMessageRequest\x1a\'.ishome.design.v1.IngestMessageResponse\x12o\n\x12SubmitConfirmation\x12+.ishome.design.v1.SubmitConfirmationRequest\x1a,.ishome.design.v1.SubmitConfirmationResponse\x12Z\n\x0bSubmitPatch\x12$.ishome.design.v1.SubmitPatchRequest\x1a%.ishome.design.v1.SubmitPatchResponse\x12W\n\nGetProject\x12#.ishome.design.v1.GetProjectRequest\x1a$.ishome.design.v1.GetProjectResponse\x12]\n\x0cListProjects\x12%.ishome.design.v1.ListProjectsRequest\x1a&.ishome.design.v1.ListProjectsResponse\x12r\n\x13PresentDeliverables\x12,.ishome.design.v1.PresentDeliverablesRequest\x1a-.ishome.design.v1.PresentDeliverablesResponseB\x86\x01\n\x14\x63om.ishome.design.v1B\x0cServiceProtoP\x01\xa2\x02\x03IDX\xaa\x02\x10Ishome.Design.V1\xca\x02\x10Ishome\\Design\\V1\xe2\x02\x1cIshome\\Design\\V1\\GPBMetadata\xea\x02\x12Ishome::Design::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,30 +36,40 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'ishome.design.v1.service_pb
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\024com.ishome.design.v1B\014ServiceProtoP\001\242\002\003IDX\252\002\020Ishome.Design.V1\312\002\020Ishome\\Design\\V1\342\002\034Ishome\\Design\\V1\\GPBMetadata\352\002\022Ishome::Design::V1'
-  _globals['_CONFIRMATIONACTION']._serialized_start=1220
-  _globals['_CONFIRMATIONACTION']._serialized_end=1347
-  _globals['_INGESTMESSAGEREQUEST']._serialized_start=145
-  _globals['_INGESTMESSAGEREQUEST']._serialized_end=228
-  _globals['_INGESTMESSAGERESPONSE']._serialized_start=230
-  _globals['_INGESTMESSAGERESPONSE']._serialized_end=284
-  _globals['_SUBMITCONFIRMATIONREQUEST']._serialized_start=287
-  _globals['_SUBMITCONFIRMATIONREQUEST']._serialized_end=415
-  _globals['_CONFIRMATIONDECISION']._serialized_start=418
-  _globals['_CONFIRMATIONDECISION']._serialized_end=584
-  _globals['_SUBMITCONFIRMATIONRESPONSE']._serialized_start=586
-  _globals['_SUBMITCONFIRMATIONRESPONSE']._serialized_end=654
-  _globals['_SUBMITPATCHREQUEST']._serialized_start=657
-  _globals['_SUBMITPATCHREQUEST']._serialized_end=792
-  _globals['_SUBMITPATCHRESPONSE']._serialized_start=794
-  _globals['_SUBMITPATCHRESPONSE']._serialized_end=850
-  _globals['_GETPROJECTREQUEST']._serialized_start=852
-  _globals['_GETPROJECTREQUEST']._serialized_end=902
-  _globals['_GETPROJECTRESPONSE']._serialized_start=904
-  _globals['_GETPROJECTRESPONSE']._serialized_end=984
-  _globals['_LISTPROJECTSREQUEST']._serialized_start=986
-  _globals['_LISTPROJECTSREQUEST']._serialized_end=1092
-  _globals['_LISTPROJECTSRESPONSE']._serialized_start=1094
-  _globals['_LISTPROJECTSRESPONSE']._serialized_end=1218
-  _globals['_DESIGNSERVICE']._serialized_start=1350
-  _globals['_DESIGNSERVICE']._serialized_end=1852
+  _globals['_CONFIRMATIONACTION']._serialized_start=2045
+  _globals['_CONFIRMATIONACTION']._serialized_end=2172
+  _globals['_INGESTMESSAGEREQUEST']._serialized_start=182
+  _globals['_INGESTMESSAGEREQUEST']._serialized_end=265
+  _globals['_INGESTMESSAGERESPONSE']._serialized_start=267
+  _globals['_INGESTMESSAGERESPONSE']._serialized_end=321
+  _globals['_SUBMITCONFIRMATIONREQUEST']._serialized_start=324
+  _globals['_SUBMITCONFIRMATIONREQUEST']._serialized_end=452
+  _globals['_CONFIRMATIONDECISION']._serialized_start=455
+  _globals['_CONFIRMATIONDECISION']._serialized_end=621
+  _globals['_SUBMITCONFIRMATIONRESPONSE']._serialized_start=623
+  _globals['_SUBMITCONFIRMATIONRESPONSE']._serialized_end=691
+  _globals['_SUBMITPATCHREQUEST']._serialized_start=694
+  _globals['_SUBMITPATCHREQUEST']._serialized_end=829
+  _globals['_SUBMITPATCHRESPONSE']._serialized_start=831
+  _globals['_SUBMITPATCHRESPONSE']._serialized_end=887
+  _globals['_GETPROJECTREQUEST']._serialized_start=889
+  _globals['_GETPROJECTREQUEST']._serialized_end=939
+  _globals['_GETPROJECTRESPONSE']._serialized_start=941
+  _globals['_GETPROJECTRESPONSE']._serialized_end=1021
+  _globals['_LISTPROJECTSREQUEST']._serialized_start=1023
+  _globals['_LISTPROJECTSREQUEST']._serialized_end=1129
+  _globals['_LISTPROJECTSRESPONSE']._serialized_start=1131
+  _globals['_LISTPROJECTSRESPONSE']._serialized_end=1255
+  _globals['_CONVERSATIONOWNER']._serialized_start=1258
+  _globals['_CONVERSATIONOWNER']._serialized_end=1428
+  _globals['_DELIVERABLE']._serialized_start=1431
+  _globals['_DELIVERABLE']._serialized_end=1571
+  _globals['_GENERATIONFAILURE']._serialized_start=1573
+  _globals['_GENERATIONFAILURE']._serialized_end=1665
+  _globals['_PRESENTDELIVERABLESREQUEST']._serialized_start=1668
+  _globals['_PRESENTDELIVERABLESREQUEST']._serialized_end=1949
+  _globals['_PRESENTDELIVERABLESRESPONSE']._serialized_start=1951
+  _globals['_PRESENTDELIVERABLESRESPONSE']._serialized_end=2043
+  _globals['_DESIGNSERVICE']._serialized_start=2175
+  _globals['_DESIGNSERVICE']._serialized_end=2793
 # @@protoc_insertion_point(module_scope)

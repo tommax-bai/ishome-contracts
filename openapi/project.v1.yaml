@@ -1,0 +1,223 @@
+# project-svc 服务间 REST 契约（业务事实入口 + 生成任务结果回流）
+# 纪律：JSON 字段 snake_case；URL 大版本；字段只增不删。
+#
+# 与 genpipe.v1.yaml 同性质：**服务间调用面**，两跳都跨语言——
+#   chat-svc（Python）→ project-svc（Java）：会话侧把结构化业务事实报给业务侧（slot_filled）；
+#   genpipe-worker（Python）→ project-svc（Java）：生成任务的结果按派发时注入的回调地址送回。
+# 对齐文档 §2.1 链路单向：chat 发事实 → project 判定建任务 → genpipe 派发 → 产物登记 → 事件 → chat 呈现。
+# 本文件只定前两跳；最后一跳（project → chat）走 proto `ishome.design.v1.DesignService.PresentDeliverables`。
+#
+# 形态选择（执行者判断，2026-09-04）：project-svc 的对外面已是 REST（process-definitions / reports），
+# 对齐 §5.3 把"project 域接口是否独立 proto 包"留为开放项——本文件即其落地形态：OpenAPI，不另起 proto。
+openapi: 3.1.0
+info:
+  title: ishome project-svc 服务间 API
+  version: 0.1.0-dev
+  description: >-
+    业务侧（项目唯一真相）的服务间入口。会话侧只做两件事：把事实上报、把产物呈现；
+    里程碑判定、任务创建、派发都在本服务内发生（chat 不判里程碑、不建任务）。
+servers:
+  - url: /api/v1
+paths:
+  /projects:
+    post:
+      operationId: find_or_create_project
+      summary: 按会话属主取项目，没有就建
+      description: >-
+        幂等：同一属主（渠道类型 × 接入实例 × 渠道侧用户）只有一个进行中的项目；已有则原样返回
+        （`created=false`），没有则按 `process_version`（缺省＝当前流程定义版本）建项目并进入首个里程碑。
+        identity 归一后属主改为渠道无关 user_id（TODO(identity)，字段只增不删）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/project_find_or_create_request" }
+      responses:
+        "200":
+          description: 项目（已有或新建）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/project_summary" }
+  /projects/{project_id}/slots:
+    post:
+      operationId: fill_slots
+      summary: 业务事实 slot_filled（一批）
+      description: >-
+        槽位落库（真相在表，(project_id, slot_key) 幂等 upsert）→ checkCompletion → 判据满足则迁移里程碑
+        并执行 on_enter（含建任务与派发）。一批在**同一事务**里落完再判一次，不逐条判——
+        面积与户型图常在同一轮到齐，逐条判会把一次迁移拆成两次半截的。
+        值一律字符串：数字照字面（"138"），对象键照原样；量纲入名落在 slot_key 上（building_area_sqm）。
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/slots_fill_request" }
+      responses:
+        "200":
+          description: 里程碑推进结果
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/milestone_progress" }
+        "404":
+          description: 项目不存在
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/error" }
+  /generation-tasks/{task_id}/result:
+    post:
+      operationId: deliver_generation_task_result
+      summary: 生成任务结果回流（编排侧按派发时注入的回调地址调用）
+      description: >-
+        任务层的结论回到业务真相：completed → 逐件登记产物（artifacts 表）→ 任务置 COMPLETED →
+        checkCompletion；failed → 任务置 FAILED，不登记产物，失败原因原样入库。
+        幂等：同一 task_id 的结果只收一次，重投返回 200 且不重复登记（编排侧 activity 会重试）。
+        生成侧不知用户是谁：报文里没有任何身份字段，产物按任务归位。
+        产物词表 `product` 是编排侧的（genpipe.v1 `floorplan_visuals_product`），本服务把它映射成自己的
+        artifact_type——两套词表各归各的仓，映射表在本服务。
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/generation_task_result" }
+      responses:
+        "200":
+          description: 已收下（含重投命中幂等）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/generation_task_result_receipt" }
+        "404":
+          description: 任务不存在（不是本服务派的）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/error" }
+components:
+  schemas:
+    conversation_owner:
+      type: object
+      required: [channel_type, channel_instance, external_user_id]
+      description: >-
+        会话属主三元组（与 proto `ishome.design.v1.ConversationOwner` 同义）。channel_type 用注册表里的
+        小写标识（registries/channel_types.md：feishu / mock …），不用 proto 枚举名——DB 按数据纪律存小写字符串。
+      properties:
+        channel_type: { type: string }
+        channel_instance: { type: string }
+        external_user_id: { type: string }
+    project_find_or_create_request:
+      type: object
+      required: [owner]
+      properties:
+        owner: { $ref: "#/components/schemas/conversation_owner" }
+        process_version:
+          type: string
+          description: 流程定义版本；缺省＝本服务当前版本。建项时固化，全生命周期同一版（D10）。
+    project_summary:
+      type: object
+      required: [project_id, current_milestone, process_version, created]
+      properties:
+        project_id: { type: string, description: ULID，26 字符 }
+        current_milestone: { type: string }
+        process_version: { type: string }
+        created:
+          type: boolean
+          description: 这一次是不是新建的（false＝已有项目原样返回）
+    slot_fill:
+      type: object
+      required: [slot_key, value, cognitive_state]
+      properties:
+        slot_key:
+          type: string
+          description: 槽位名，量纲入名（building_area_sqm / floorplan / floor_area_ratio_percent …）
+        value:
+          type: string
+          description: 值的字面（数字照写、对象键照原样、枚举照词表）
+        cognitive_state:
+          type: string
+          enum: [observed, inferred, proposed, user_confirmed, measured, verified]
+          description: 认知状态六值（common/v1/cognitive_state.proto 的小写形态，禁同义变体）
+        source_event_id:
+          type: string
+          description: 来源事件引用（渠道消息 id 等），幂等与审计锚点；可空
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 1
+    slots_fill_request:
+      type: object
+      required: [slots]
+      properties:
+        slots:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/slot_fill" }
+    milestone_progress:
+      type: object
+      required: [project_id, current_milestone, advanced, entered_milestones, created_task_ids]
+      properties:
+        project_id: { type: string }
+        current_milestone: { type: string }
+        advanced: { type: boolean }
+        entered_milestones:
+          type: array
+          items: { type: string }
+        created_task_ids:
+          type: array
+          items: { type: string }
+          description: 本次迁移 on_enter 建出的生成任务 id（已派发或派发失败都登记，状态看表）
+    generation_task_product:
+      type: object
+      required: [product, object_key]
+      description: 编排侧交回的一件产物。`product` 词表归 genpipe.v1（floorplan_visuals_product）。
+      properties:
+        product: { type: string }
+        object_key: { type: string, description: 私有桶对象键（registries/object_keys.md） }
+        content_type: { type: string }
+        gen_params:
+          type: object
+          description: 生成参数快照（模板 id、模型逻辑名等），原样入 artifacts.gen_params
+    generation_task_result:
+      type: object
+      required: [task_id, status, products]
+      properties:
+        task_id: { type: string }
+        status:
+          type: string
+          enum: [completed, failed]
+        products:
+          type: array
+          items: { $ref: "#/components/schemas/generation_task_product" }
+          description: completed 时非空；failed 时可带已出的半成品（不登记为可呈现产物，只留血缘）
+        failure:
+          type: object
+          description: failed 时必填
+          properties:
+            code: { type: string }
+            detail: { type: string }
+        workflow_id: { type: string }
+        run_id: { type: string }
+    generation_task_result_receipt:
+      type: object
+      required: [task_id, accepted, duplicate]
+      properties:
+        task_id: { type: string }
+        accepted: { type: boolean }
+        duplicate:
+          type: boolean
+          description: true＝这个 task_id 的结果此前已收过，本次未重复登记
+        registered_artifact_ids:
+          type: array
+          items: { type: string }
+    error:
+      type: object
+      properties:
+        detail: { type: string }

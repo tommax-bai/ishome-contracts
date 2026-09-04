@@ -39,6 +39,13 @@
 |---|---|
 | `genpipe.candidate.scored` | 候选打分完成（技术架构 §6.1 既定示例；机检门禁指标源） |
 
+## project 域（生产方 project-svc；2026-09-04 新增）
+
+| type | 上总线理由 / 说明 |
+|---|---|
+| `project.deliverables.ready` | 一批产物登记完毕、该送到业主手里了（属性：project_id、delivery_id、owner 三元组、deliverables）。先写本地 outbox 再中继；总线未接入前中继直接调 `DesignService.PresentDeliverables`，接入后改为发总线、chat 订阅——中继换实现，事件不换名 |
+| `project.generation-task.failed` | 生成任务终判失败（属性：project_id、task_id、task_type、failure）。chat 依此对业主诚实告知（v0.3 §9 失败路径显式） |
+
 ## 明确不上总线（Temporal workflow 内部，列出以免误注册）
 
 `BasicRequirementProvided`、`ConfirmationListGenerated`、`DeepDataProvided`（落 facts 即可）——均为 design workflow 编排细节（对齐文档 §5.2 表中标"否"项）。

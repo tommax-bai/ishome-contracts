@@ -16,7 +16,12 @@
 | `functional-annotation` | 功能说明图 | basicArrangement + layoutPlanning | 基础专业感（≈ Agent 方案原"图二"规划层） | **templateId 本表首定**；视觉规范待定（Agent 方案 §16-1） |
 | `pencil-life-sketch` | 彩铅生活草图 | basicArrangement + layoutPlanning + lifestyleAtmosphere | 生活密度、兴趣身份、真实手绘（生活方式提案、传播性） | 视觉规范已定稿（视觉提案 §8"彩铅建筑生活草图"） |
 
+| `pencil-sketch` | 彩铅生活草图（实装 id） | basicArrangement + layoutPlanning + lifestyleAtmosphere | 同 `pencil-life-sketch` 的价值定位；**实装模板文件用的是本 id**（imagegen `templates/pencil-sketch.json`），`pencil-life-sketch` 保留登记但无实装 | 已真跑（2026-09-01） |
+| `lifestyle-notebook` | 手账·零字版 | basicArrangement + layoutPlanning + lifestyleAtmosphere | 手账风格、图上不写字（对照组） | 已真跑（2026-09-01） |
+| `lifestyle-notebook-handwritten` | 手账·写字版 | basicArrangement + layoutPlanning + lifestyleAtmosphere | **免费第三张风格图拍定形态**（用户裁决 2026-09-01：手账·写字版，且图上要有注释——注释内容我们给、位置钉在房间上） | 已真机发业主（2026-09-01） |
+
 默认交付组合与顺序（运营配置，非架构约束）：`cream-journal` → `functional-annotation` → `pencil-life-sketch`。
+**三张免费图现行组合（2026-09-04，随派发链路接通落定；数据在编排侧配置）**：情绪图＝`cream-journal` 底图 + 确定性叠字（标题/总结/贴士）；功能说明图＝render2d 制图（`functional-annotation` 定位，不经图像模型）；风格图＝`lifestyle-notebook-handwritten` + 注释。
 
 ## 信息层定义（模板的组合原料，Agent 方案 §10）
 

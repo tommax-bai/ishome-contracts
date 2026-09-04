@@ -81,6 +81,31 @@ public final class ServiceProto extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ishome_design_v1_ListProjectsResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ishome_design_v1_ConversationOwner_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ishome_design_v1_ConversationOwner_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ishome_design_v1_Deliverable_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ishome_design_v1_Deliverable_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ishome_design_v1_GenerationFailure_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ishome_design_v1_GenerationFailure_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ishome_design_v1_PresentDeliverablesRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ishome_design_v1_PresentDeliverablesRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ishome_design_v1_PresentDeliverablesResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ishome_design_v1_PresentDeliverablesResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -92,60 +117,85 @@ public final class ServiceProto extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\036ishome/design/v1/service.proto\022\020ishome" +
       ".design.v1\032\034google/protobuf/struct.proto" +
-      "\032\037ishome/channel/v1/message.proto\032\034ishom" +
-      "e/design/v1/types.proto\"S\n\024IngestMessage" +
-      "Request\022;\n\007message\030\001 \001(\0132!.ishome.channe" +
-      "l.v1.UnifiedMessageR\007message\"6\n\025IngestMe" +
-      "ssageResponse\022\035\n\nmessage_id\030\001 \001(\tR\tmessa" +
-      "geId\"\200\001\n\031SubmitConfirmationRequest\022\035\n\npr" +
-      "oject_id\030\001 \001(\tR\tprojectId\022D\n\tdecisions\030\002" +
-      " \003(\0132&.ishome.design.v1.ConfirmationDeci" +
-      "sionR\tdecisions\"\246\001\n\024ConfirmationDecision" +
-      "\022\027\n\007item_id\030\001 \001(\tR\006itemId\022<\n\006action\030\002 \001(" +
-      "\0162$.ishome.design.v1.ConfirmationActionR" +
-      "\006action\0227\n\ncorrection\030\003 \001(\0132\027.google.pro" +
-      "tobuf.StructR\ncorrection\"D\n\032SubmitConfir" +
-      "mationResponse\022&\n\017open_item_count\030\001 \001(\005R" +
-      "\ropenItemCount\"\207\001\n\022SubmitPatchRequest\022\035\n" +
-      "\nproject_id\030\001 \001(\tR\tprojectId\022#\n\rbase_rev" +
-      "ision\030\002 \001(\003R\014baseRevision\022-\n\005patch\030\003 \001(\013" +
-      "2\027.ishome.design.v1.PatchR\005patch\"8\n\023Subm" +
-      "itPatchResponse\022!\n\014new_revision\030\001 \001(\003R\013n" +
-      "ewRevision\"2\n\021GetProjectRequest\022\035\n\nproje" +
-      "ct_id\030\001 \001(\tR\tprojectId\"P\n\022GetProjectResp" +
-      "onse\022:\n\007project\030\001 \001(\0132 .ishome.design.v1" +
-      ".ProjectSummaryR\007project\"j\n\023ListProjects" +
-      "Request\022\027\n\007user_id\030\001 \001(\tR\006userId\022\033\n\tpage" +
-      "_size\030\002 \001(\005R\010pageSize\022\035\n\npage_token\030\003 \001(" +
-      "\tR\tpageToken\"|\n\024ListProjectsResponse\022<\n\010" +
-      "projects\030\001 \003(\0132 .ishome.design.v1.Projec" +
-      "tSummaryR\010projects\022&\n\017next_page_token\030\002 " +
-      "\001(\tR\rnextPageToken*\177\n\022ConfirmationAction" +
-      "\022#\n\037CONFIRMATION_ACTION_UNSPECIFIED\020\000\022!\n" +
-      "\035CONFIRMATION_ACTION_CONFIRMED\020\001\022!\n\035CONF" +
-      "IRMATION_ACTION_CORRECTED\020\0022\366\003\n\rDesignSe" +
-      "rvice\022`\n\rIngestMessage\022&.ishome.design.v" +
-      "1.IngestMessageRequest\032\'.ishome.design.v" +
-      "1.IngestMessageResponse\022o\n\022SubmitConfirm" +
-      "ation\022+.ishome.design.v1.SubmitConfirmat" +
-      "ionRequest\032,.ishome.design.v1.SubmitConf" +
-      "irmationResponse\022Z\n\013SubmitPatch\022$.ishome" +
-      ".design.v1.SubmitPatchRequest\032%.ishome.d" +
-      "esign.v1.SubmitPatchResponse\022W\n\nGetProje" +
-      "ct\022#.ishome.design.v1.GetProjectRequest\032" +
-      "$.ishome.design.v1.GetProjectResponse\022]\n" +
-      "\014ListProjects\022%.ishome.design.v1.ListPro" +
-      "jectsRequest\032&.ishome.design.v1.ListProj" +
-      "ectsResponseB\206\001\n\024com.ishome.design.v1B\014S" +
-      "erviceProtoP\001\242\002\003IDX\252\002\020Ishome.Design.V1\312\002" +
-      "\020Ishome\\Design\\V1\342\002\034Ishome\\Design\\V1\\GPB" +
-      "Metadata\352\002\022Ishome::Design::V1b\006proto3"
+      "\032\037ishome/channel/v1/message.proto\032#ishom" +
+      "e/common/v1/channel_type.proto\032\034ishome/d" +
+      "esign/v1/types.proto\"S\n\024IngestMessageReq" +
+      "uest\022;\n\007message\030\001 \001(\0132!.ishome.channel.v" +
+      "1.UnifiedMessageR\007message\"6\n\025IngestMessa" +
+      "geResponse\022\035\n\nmessage_id\030\001 \001(\tR\tmessageI" +
+      "d\"\200\001\n\031SubmitConfirmationRequest\022\035\n\nproje" +
+      "ct_id\030\001 \001(\tR\tprojectId\022D\n\tdecisions\030\002 \003(" +
+      "\0132&.ishome.design.v1.ConfirmationDecisio" +
+      "nR\tdecisions\"\246\001\n\024ConfirmationDecision\022\027\n" +
+      "\007item_id\030\001 \001(\tR\006itemId\022<\n\006action\030\002 \001(\0162$" +
+      ".ishome.design.v1.ConfirmationActionR\006ac" +
+      "tion\0227\n\ncorrection\030\003 \001(\0132\027.google.protob" +
+      "uf.StructR\ncorrection\"D\n\032SubmitConfirmat" +
+      "ionResponse\022&\n\017open_item_count\030\001 \001(\005R\rop" +
+      "enItemCount\"\207\001\n\022SubmitPatchRequest\022\035\n\npr" +
+      "oject_id\030\001 \001(\tR\tprojectId\022#\n\rbase_revisi" +
+      "on\030\002 \001(\003R\014baseRevision\022-\n\005patch\030\003 \001(\0132\027." +
+      "ishome.design.v1.PatchR\005patch\"8\n\023SubmitP" +
+      "atchResponse\022!\n\014new_revision\030\001 \001(\003R\013newR" +
+      "evision\"2\n\021GetProjectRequest\022\035\n\nproject_" +
+      "id\030\001 \001(\tR\tprojectId\"P\n\022GetProjectRespons" +
+      "e\022:\n\007project\030\001 \001(\0132 .ishome.design.v1.Pr" +
+      "ojectSummaryR\007project\"j\n\023ListProjectsReq" +
+      "uest\022\027\n\007user_id\030\001 \001(\tR\006userId\022\033\n\tpage_si" +
+      "ze\030\002 \001(\005R\010pageSize\022\035\n\npage_token\030\003 \001(\tR\t" +
+      "pageToken\"|\n\024ListProjectsResponse\022<\n\010pro" +
+      "jects\030\001 \003(\0132 .ishome.design.v1.ProjectSu" +
+      "mmaryR\010projects\022&\n\017next_page_token\030\002 \001(\t" +
+      "R\rnextPageToken\"\252\001\n\021ConversationOwner\022@\n" +
+      "\014channel_type\030\001 \001(\0162\035.ishome.common.v1.C" +
+      "hannelTypeR\013channelType\022)\n\020channel_insta" +
+      "nce\030\002 \001(\tR\017channelInstance\022(\n\020external_u" +
+      "ser_id\030\003 \001(\tR\016externalUserId\"\214\001\n\013Deliver" +
+      "able\022\037\n\013artifact_id\030\001 \001(\tR\nartifactId\022#\n" +
+      "\rartifact_type\030\002 \001(\tR\014artifactType\022\035\n\nob" +
+      "ject_key\030\003 \001(\tR\tobjectKey\022\030\n\007caption\030\004 \001" +
+      "(\tR\007caption\"\\\n\021GenerationFailure\022\022\n\004code" +
+      "\030\001 \001(\tR\004code\022\026\n\006detail\030\002 \001(\tR\006detail\022\033\n\t" +
+      "task_type\030\003 \001(\tR\010taskType\"\231\002\n\032PresentDel" +
+      "iverablesRequest\022\037\n\013delivery_id\030\001 \001(\tR\nd" +
+      "eliveryId\022\035\n\nproject_id\030\002 \001(\tR\tprojectId" +
+      "\0229\n\005owner\030\003 \001(\0132#.ishome.design.v1.Conve" +
+      "rsationOwnerR\005owner\022A\n\014deliverables\030\004 \003(" +
+      "\0132\035.ishome.design.v1.DeliverableR\014delive" +
+      "rables\022=\n\007failure\030\005 \001(\0132#.ishome.design." +
+      "v1.GenerationFailureR\007failure\"\\\n\033Present" +
+      "DeliverablesResponse\022\034\n\tdelivered\030\001 \001(\010R" +
+      "\tdelivered\022\037\n\013message_ids\030\002 \003(\tR\nmessage" +
+      "Ids*\177\n\022ConfirmationAction\022#\n\037CONFIRMATIO" +
+      "N_ACTION_UNSPECIFIED\020\000\022!\n\035CONFIRMATION_A" +
+      "CTION_CONFIRMED\020\001\022!\n\035CONFIRMATION_ACTION" +
+      "_CORRECTED\020\0022\352\004\n\rDesignService\022`\n\rIngest" +
+      "Message\022&.ishome.design.v1.IngestMessage" +
+      "Request\032\'.ishome.design.v1.IngestMessage" +
+      "Response\022o\n\022SubmitConfirmation\022+.ishome." +
+      "design.v1.SubmitConfirmationRequest\032,.is" +
+      "home.design.v1.SubmitConfirmationRespons" +
+      "e\022Z\n\013SubmitPatch\022$.ishome.design.v1.Subm" +
+      "itPatchRequest\032%.ishome.design.v1.Submit" +
+      "PatchResponse\022W\n\nGetProject\022#.ishome.des" +
+      "ign.v1.GetProjectRequest\032$.ishome.design" +
+      ".v1.GetProjectResponse\022]\n\014ListProjects\022%" +
+      ".ishome.design.v1.ListProjectsRequest\032&." +
+      "ishome.design.v1.ListProjectsResponse\022r\n" +
+      "\023PresentDeliverables\022,.ishome.design.v1." +
+      "PresentDeliverablesRequest\032-.ishome.desi" +
+      "gn.v1.PresentDeliverablesResponseB\206\001\n\024co" +
+      "m.ishome.design.v1B\014ServiceProtoP\001\242\002\003IDX" +
+      "\252\002\020Ishome.Design.V1\312\002\020Ishome\\Design\\V1\342\002" +
+      "\034Ishome\\Design\\V1\\GPBMetadata\352\002\022Ishome::" +
+      "Design::V1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.StructProto.getDescriptor(),
           com.ishome.channel.v1.MessageProto.getDescriptor(),
+          com.ishome.common.v1.ChannelTypeProto.getDescriptor(),
           com.ishome.design.v1.TypesProto.getDescriptor(),
         });
     internal_static_ishome_design_v1_IngestMessageRequest_descriptor =
@@ -214,9 +264,40 @@ public final class ServiceProto extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_ishome_design_v1_ListProjectsResponse_descriptor,
         new java.lang.String[] { "Projects", "NextPageToken", });
+    internal_static_ishome_design_v1_ConversationOwner_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_ishome_design_v1_ConversationOwner_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_ishome_design_v1_ConversationOwner_descriptor,
+        new java.lang.String[] { "ChannelType", "ChannelInstance", "ExternalUserId", });
+    internal_static_ishome_design_v1_Deliverable_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_ishome_design_v1_Deliverable_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_ishome_design_v1_Deliverable_descriptor,
+        new java.lang.String[] { "ArtifactId", "ArtifactType", "ObjectKey", "Caption", });
+    internal_static_ishome_design_v1_GenerationFailure_descriptor =
+      getDescriptor().getMessageType(13);
+    internal_static_ishome_design_v1_GenerationFailure_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_ishome_design_v1_GenerationFailure_descriptor,
+        new java.lang.String[] { "Code", "Detail", "TaskType", });
+    internal_static_ishome_design_v1_PresentDeliverablesRequest_descriptor =
+      getDescriptor().getMessageType(14);
+    internal_static_ishome_design_v1_PresentDeliverablesRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_ishome_design_v1_PresentDeliverablesRequest_descriptor,
+        new java.lang.String[] { "DeliveryId", "ProjectId", "Owner", "Deliverables", "Failure", });
+    internal_static_ishome_design_v1_PresentDeliverablesResponse_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_ishome_design_v1_PresentDeliverablesResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_ishome_design_v1_PresentDeliverablesResponse_descriptor,
+        new java.lang.String[] { "Delivered", "MessageIds", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.StructProto.getDescriptor();
     com.ishome.channel.v1.MessageProto.getDescriptor();
+    com.ishome.common.v1.ChannelTypeProto.getDescriptor();
     com.ishome.design.v1.TypesProto.getDescriptor();
   }
 

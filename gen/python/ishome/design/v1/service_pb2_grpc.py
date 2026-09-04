@@ -41,6 +41,11 @@ class DesignServiceStub:
                 request_serializer=ishome_dot_design_dot_v1_dot_service__pb2.ListProjectsRequest.SerializeToString,
                 response_deserializer=ishome_dot_design_dot_v1_dot_service__pb2.ListProjectsResponse.FromString,
                 _registered_method=True)
+        self.PresentDeliverables = channel.unary_unary(
+                '/ishome.design.v1.DesignService/PresentDeliverables',
+                request_serializer=ishome_dot_design_dot_v1_dot_service__pb2.PresentDeliverablesRequest.SerializeToString,
+                response_deserializer=ishome_dot_design_dot_v1_dot_service__pb2.PresentDeliverablesResponse.FromString,
+                _registered_method=True)
 
 
 class DesignServiceServicer:
@@ -84,6 +89,16 @@ class DesignServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PresentDeliverables(self, request, context):
+        """产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+        chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+        链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+        幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_DesignServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -111,6 +126,11 @@ def add_DesignServiceServicer_to_server(servicer, server):
                     servicer.ListProjects,
                     request_deserializer=ishome_dot_design_dot_v1_dot_service__pb2.ListProjectsRequest.FromString,
                     response_serializer=ishome_dot_design_dot_v1_dot_service__pb2.ListProjectsResponse.SerializeToString,
+            ),
+            'PresentDeliverables': grpc.unary_unary_rpc_method_handler(
+                    servicer.PresentDeliverables,
+                    request_deserializer=ishome_dot_design_dot_v1_dot_service__pb2.PresentDeliverablesRequest.FromString,
+                    response_serializer=ishome_dot_design_dot_v1_dot_service__pb2.PresentDeliverablesResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -250,6 +270,33 @@ class DesignService:
             '/ishome.design.v1.DesignService/ListProjects',
             ishome_dot_design_dot_v1_dot_service__pb2.ListProjectsRequest.SerializeToString,
             ishome_dot_design_dot_v1_dot_service__pb2.ListProjectsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PresentDeliverables(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ishome.design.v1.DesignService/PresentDeliverables',
+            ishome_dot_design_dot_v1_dot_service__pb2.PresentDeliverablesRequest.SerializeToString,
+            ishome_dot_design_dot_v1_dot_service__pb2.PresentDeliverablesResponse.FromString,
             options,
             channel_credentials,
             insecure,

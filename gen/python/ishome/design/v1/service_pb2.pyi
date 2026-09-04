@@ -1,5 +1,6 @@
 from google.protobuf import struct_pb2 as _struct_pb2
 from ishome.channel.v1 import message_pb2 as _message_pb2
+from ishome.common.v1 import channel_type_pb2 as _channel_type_pb2
 from ishome.design.v1 import types_pb2 as _types_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
@@ -100,3 +101,57 @@ class ListProjectsResponse(_message.Message):
     projects: _containers.RepeatedCompositeFieldContainer[_types_pb2.ProjectSummary]
     next_page_token: str
     def __init__(self, projects: _Optional[_Iterable[_Union[_types_pb2.ProjectSummary, _Mapping]]] = ..., next_page_token: _Optional[str] = ...) -> None: ...
+
+class ConversationOwner(_message.Message):
+    __slots__ = ("channel_type", "channel_instance", "external_user_id")
+    CHANNEL_TYPE_FIELD_NUMBER: _ClassVar[int]
+    CHANNEL_INSTANCE_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_USER_ID_FIELD_NUMBER: _ClassVar[int]
+    channel_type: _channel_type_pb2.ChannelType
+    channel_instance: str
+    external_user_id: str
+    def __init__(self, channel_type: _Optional[_Union[_channel_type_pb2.ChannelType, str]] = ..., channel_instance: _Optional[str] = ..., external_user_id: _Optional[str] = ...) -> None: ...
+
+class Deliverable(_message.Message):
+    __slots__ = ("artifact_id", "artifact_type", "object_key", "caption")
+    ARTIFACT_ID_FIELD_NUMBER: _ClassVar[int]
+    ARTIFACT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    OBJECT_KEY_FIELD_NUMBER: _ClassVar[int]
+    CAPTION_FIELD_NUMBER: _ClassVar[int]
+    artifact_id: str
+    artifact_type: str
+    object_key: str
+    caption: str
+    def __init__(self, artifact_id: _Optional[str] = ..., artifact_type: _Optional[str] = ..., object_key: _Optional[str] = ..., caption: _Optional[str] = ...) -> None: ...
+
+class GenerationFailure(_message.Message):
+    __slots__ = ("code", "detail", "task_type")
+    CODE_FIELD_NUMBER: _ClassVar[int]
+    DETAIL_FIELD_NUMBER: _ClassVar[int]
+    TASK_TYPE_FIELD_NUMBER: _ClassVar[int]
+    code: str
+    detail: str
+    task_type: str
+    def __init__(self, code: _Optional[str] = ..., detail: _Optional[str] = ..., task_type: _Optional[str] = ...) -> None: ...
+
+class PresentDeliverablesRequest(_message.Message):
+    __slots__ = ("delivery_id", "project_id", "owner", "deliverables", "failure")
+    DELIVERY_ID_FIELD_NUMBER: _ClassVar[int]
+    PROJECT_ID_FIELD_NUMBER: _ClassVar[int]
+    OWNER_FIELD_NUMBER: _ClassVar[int]
+    DELIVERABLES_FIELD_NUMBER: _ClassVar[int]
+    FAILURE_FIELD_NUMBER: _ClassVar[int]
+    delivery_id: str
+    project_id: str
+    owner: ConversationOwner
+    deliverables: _containers.RepeatedCompositeFieldContainer[Deliverable]
+    failure: GenerationFailure
+    def __init__(self, delivery_id: _Optional[str] = ..., project_id: _Optional[str] = ..., owner: _Optional[_Union[ConversationOwner, _Mapping]] = ..., deliverables: _Optional[_Iterable[_Union[Deliverable, _Mapping]]] = ..., failure: _Optional[_Union[GenerationFailure, _Mapping]] = ...) -> None: ...
+
+class PresentDeliverablesResponse(_message.Message):
+    __slots__ = ("delivered", "message_ids")
+    DELIVERED_FIELD_NUMBER: _ClassVar[int]
+    MESSAGE_IDS_FIELD_NUMBER: _ClassVar[int]
+    delivered: bool
+    message_ids: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, delivered: _Optional[bool] = ..., message_ids: _Optional[_Iterable[str]] = ...) -> None: ...

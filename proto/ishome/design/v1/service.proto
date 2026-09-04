@@ -4,6 +4,7 @@ package ishome.design.v1;
 
 import "google/protobuf/struct.proto";
 import "ishome/channel/v1/message.proto";
+import "ishome/common/v1/channel_type.proto";
 import "ishome/design/v1/types.proto";
 
 // design-svc 对内 gRPC（对齐文档 §5.3：会话、确认、Patch、项目查询）。v0 草案。
@@ -23,6 +24,12 @@ service DesignService {
   // 项目查询
   rpc GetProject(GetProjectRequest) returns (GetProjectResponse);
   rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse);
+
+  // 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+  // chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+  // 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+  // 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+  rpc PresentDeliverables(PresentDeliverablesRequest) returns (PresentDeliverablesResponse);
 }
 
 message IngestMessageRequest {
@@ -88,4 +95,51 @@ message ListProjectsRequest {
 message ListProjectsResponse {
   repeated ProjectSummary projects = 1;
   string next_page_token = 2;
+}
+
+// 会话定位三元组：渠道类型 × 接入实例 × 渠道侧用户标识（svc_chat.conversations 的自然键）。
+// 出现在这里是因为 project-svc 主动找 chat 时手上没有入站消息可挂信封；identity 归一后
+// 改为渠道无关 user_id 键控（对齐 §6.5），本消息字段只增不删。
+message ConversationOwner {
+  ishome.common.v1.ChannelType channel_type = 1;
+  string channel_instance = 2;
+  string external_user_id = 3;
+}
+
+// 一件要送到业主手里的产物：project-svc 的登记 id + 产物类型（数据值）+ 私有桶对象键。
+// 生成侧不知用户是谁，所以键里没有身份；谁该收到由 owner 说。
+message Deliverable {
+  string artifact_id = 1;
+  // 产物类型，数据值（如 vision_mood_image）；chat 只按它决定呈现顺序与措辞，不理解语义
+  string artifact_type = 2;
+  // 私有桶对象键（registries/object_keys.md）；渠道侧按键取桶再发
+  string object_key = 3;
+  // 随图一句说明（可空）。系统文案，归"发给业主的文案一律分条"那条规矩管
+  string caption = 4;
+}
+
+// 生成没做出来时的说明（v0.3 §9 失败路径显式）：chat 依此对业主诚实告知，不静默。
+message GenerationFailure {
+  // 失败码（数据值，如 plan-2d-render）；chat 不理解语义，只决定措辞
+  string code = 1;
+  string detail = 2;
+  // 是哪类任务没做出来（数据值，如 vision_image）
+  string task_type = 3;
+}
+
+message PresentDeliverablesRequest {
+  // project-svc 铸的送达标识（ULID）；chat 用它派生出站幂等键
+  string delivery_id = 1;
+  string project_id = 2;
+  ConversationOwner owner = 3;
+  repeated Deliverable deliverables = 4;
+  // 有它＝这一次是"没做出来"的告知，deliverables 为空；没有它＝正常送达
+  GenerationFailure failure = 5;
+}
+
+message PresentDeliverablesResponse {
+  // 这一次是否真的发出去了（重投命中幂等时为 false）
+  bool delivered = 1;
+  // 发出去的渠道消息 id（按 deliverables 顺序）
+  repeated string message_ids = 2;
 }

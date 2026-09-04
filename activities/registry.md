@@ -23,3 +23,9 @@
 | 12 | `report-page-assemble` | `assemble_report_pages` | 报告成文线·页面装配（唯一知道"页"的节点，确定性；pt- 页型库待编译，首版按域成页） | reportgen-svc 专用 |
 | 13 | `report-book-check` | `check_report_book` | 报告成文线·册级校验（渲染前；册级 cr- 判据随 release 数据物化执行，首版为结构完整性检查） | reportgen-svc 专用 |
 | 14 | `report-book-render` | `render_report_book` | 报告渲染层·出册（册检通过后；pages + 报告数据包 → 单册自包含 HTML → 写私有对象存储，返回对象键）。**确定性、零 LLM**；对象键由 `report_id` 确定性派生，故"这份报告出没出册"问存储即知，不另立台账 | reportrender-svc 专用 |
+| 15 | `floorplan-geometry-extract` | `extract_floorplan_geometry` | 户型图几何提取（2026-09-04 入册）：吃对象键 → 勘测一次（哪块是哪个房间，唯一一次模型调用）→ 墙线/门窗洞/房间遮罩（确定性、归一化坐标）→ 带 id 的户型事实（确定性）。几何 JSON（含勘测）写回同前缀；几何与事实随出参内联给下游（几何不由 LLM 决定） | 复用 |
+| 16 | `plan-notes-write` | `write_plan_notes` | 户型批注（空间推理背书通道）：事实清单 + 房间清单 → 挂在房间上的短句，每句必须引得到 fact_id，机检两条（引用存在、至少一条）。句子归模型、判据归代码 | genpipe-worker |
+| 17 | `plan-copy-write` | `write_plan_copy` | 获客图页面文案：标题 + 情绪总结 + 三条贴士；不走强制引用（裁决 2026-08-31），数字必须在事实清单里出现过 | genpipe-worker |
+| 18 | `style-caption-overlay` | `overlay_style_caption` | 情绪图叠字：风格图（桶里）+ 页面文案 → 确定性叠上标题/总结/贴士 → 写回同前缀。版面量不出足够连续空白即整张失败（不把字压在画面上） | render2d-svc 专用 |
+| 19 | `task-result-deliver` | `deliver_task_result` | 生成任务结果回流：把 workflow 归并的结论按派发时注入的回调地址 `POST` 给业务侧（project.v1 `generation_task_result`）。编排侧不知业务侧在哪，地址由上层注入（规范 §1.0 "向上通信只走事件/回调"）；重试走 activity 原生语义 | genpipe-worker |
+

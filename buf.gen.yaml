@@ -2,20 +2,23 @@
 # Java  → gen/java/src/main/java   （Maven 坐标 com.ishome:ishome-contracts-java，GitHub Packages，发布 stub 见 CI）
 # TS    → gen/ts/src               （npm @tommax-bai/ishome-contracts，GitHub Packages npm 强制 scope=账号名）
 # Python→ gen/python/              （包名 ishome-contracts；GitHub Packages 不支持 PyPI，消费方用 git 依赖 + subdirectory=gen/python）
+# 远程插件**钉版本**（2026-09-04）：不钉则 BSR 上插件一升补丁版，`buf generate` 就把全部生成文件的
+# 运行时校验号一起抬高（4.36.0→4.36.1 那次 114 个文件全变），消费仓被迫同步升 protobuf 运行时。
+# 升插件版本＝一次显式提交，与升运行时同批（backend libs.versions.toml、gen/java、gen/python 三处）。
 version: v2
 managed:
   enabled: true
   # java_package 默认加 com. 前缀：ishome.common.v1 → com.ishome.common.v1，与 backend 包约定一致
 plugins:
-  - remote: buf.build/protocolbuffers/java
+  - remote: buf.build/protocolbuffers/java:v36.0
     out: gen/java/src/main/java
   - remote: buf.build/grpc/java
     out: gen/java/src/main/java
-  - remote: buf.build/bufbuild/es
+  - remote: buf.build/bufbuild/es:v2.14.0
     out: gen/ts/src
-  - remote: buf.build/protocolbuffers/python
+  - remote: buf.build/protocolbuffers/python:v36.0
     out: gen/python
-  - remote: buf.build/protocolbuffers/pyi
+  - remote: buf.build/protocolbuffers/pyi:v36.0
     out: gen/python
   - remote: buf.build/grpc/python
     out: gen/python

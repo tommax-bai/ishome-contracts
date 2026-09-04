@@ -44,6 +44,35 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/error" }
+  /floorplan-visuals:
+    post:
+      operationId: create_floorplan_visuals
+      summary: 派发一张户型图到"三张免费图"生成线
+      description: >-
+        202 = 任务已交给编排侧，**不是**"图好了"。链路（FloorplanVisualsWorkflow）：
+        勘测 + 几何提取 → 户型事实 → 批注 ∥ 页面文案 → 母版与功能说明图（render2d）→
+        情绪图底图 ∥ 手账写字版风格图（imagegen）→ 情绪图叠字（render2d）→ 结果按 `result_callback_url`
+        送回业务侧（task-result-deliver）。户型特征解析（floorplan-parse）与主链并行，
+        产物同样交回，给报告那条腿用。
+
+        幂等：`task_id` 由 **project-svc 铸造**（裁决③）。同一 task_id 在飞期间重复派发 → 409。
+        生成侧不知用户是谁：报文里只有对象键与数字，没有身份字段（2026-09-04 新增）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/floorplan_visuals_spec" }
+      responses:
+        "202":
+          description: 已受理，回编排侧定址
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/workflow_start_receipt" }
+        "409":
+          description: 同一 task_id 已在飞（重复派发）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/error" }
 components:
   schemas:
     report_compose_spec:
@@ -78,6 +107,42 @@ components:
             与 `max_rewrites` 是两个旋钮：那个是 activity 章内的自我修正轮数；这个是章内轮数
             耗尽、整章 failed 之后，编排侧拿同样入参另起一次派发。用户裁决 2026-08-31：
             「失败让重开……单独开失败的这一张就可以了」。
+    floorplan_visuals_spec:
+      type: object
+      required: [task_id, floorplan_object_key, result_callback_url]
+      properties:
+        task_id:
+          type: string
+          description: 生成任务 id（project-svc 铸造的 ULID，26 字符）；workflow id 由其派生。
+        floorplan_object_key:
+          type: string
+          description: >-
+            用户上传的户型图在私有桶里的键（`uploads/{content_sha256}/original.{ext}`，
+            registries/object_keys.md）。全部派生产物落同一前缀。
+        building_area_sqm:
+          type: number
+          description: 业主给的建筑面积，平方米；缺省＝不给（批注与文案就不提面积）。
+        floor_area_ratio_percent:
+          type: number
+          description: 得房率百分数（业务侧推的，默认 80）；缺省＝不给。
+        result_callback_url:
+          type: string
+          description: >-
+            结果回流地址（由派发方注入，编排侧不知道业务侧在哪）。完整 URL，编排侧
+            `task-result-deliver` activity 以 `POST` 把 project.v1 `generation_task_result` 送到这里。
+        templates:
+          type: object
+          description: 覆盖默认模板组合（生产调用方不传；默认在编排侧配置：mood=cream-journal, style=lifestyle-notebook-handwritten）
+          properties:
+            mood: { type: string }
+            style: { type: string }
+    floorplan_visuals_product:
+      type: string
+      description: >-
+        三张图生成线交回的产物词表（只增不改）。业务侧把它映射成自己的 artifact_type。
+        mood_image=情绪图（风格底图 + 叠字成品）；brief_image=功能说明图；style_image=手账写字版风格图；
+        plan_master=母版；floorplan_geometry=几何 JSON（含勘测）；floorplan_reading=户型特征解析 JSON。
+      enum: [mood_image, brief_image, style_image, plan_master, floorplan_geometry, floorplan_reading]
     workflow_start_receipt:
       type: object
       required: [workflow_id, run_id]

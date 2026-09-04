@@ -6,6 +6,7 @@ import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobu
 import type { JsonObject, Message } from "@bufbuild/protobuf";
 import type { UnifiedMessage } from "../../channel/v1/message_pb";
 import type { Patch, ProjectSummary } from "./types_pb";
+import type { ChannelType } from "../../common/v1/channel_type_pb";
 
 /**
  * Describes the file ishome/design/v1/service.proto.
@@ -243,6 +244,173 @@ export declare type ListProjectsResponse = Message<"ishome.design.v1.ListProject
 export declare const ListProjectsResponseSchema: GenMessage<ListProjectsResponse>;
 
 /**
+ * 会话定位三元组：渠道类型 × 接入实例 × 渠道侧用户标识（svc_chat.conversations 的自然键）。
+ * 出现在这里是因为 project-svc 主动找 chat 时手上没有入站消息可挂信封；identity 归一后
+ * 改为渠道无关 user_id 键控（对齐 §6.5），本消息字段只增不删。
+ *
+ * @generated from message ishome.design.v1.ConversationOwner
+ */
+export declare type ConversationOwner = Message<"ishome.design.v1.ConversationOwner"> & {
+  /**
+   * @generated from field: ishome.common.v1.ChannelType channel_type = 1;
+   */
+  channelType: ChannelType;
+
+  /**
+   * @generated from field: string channel_instance = 2;
+   */
+  channelInstance: string;
+
+  /**
+   * @generated from field: string external_user_id = 3;
+   */
+  externalUserId: string;
+};
+
+/**
+ * Describes the message ishome.design.v1.ConversationOwner.
+ * Use `create(ConversationOwnerSchema)` to create a new message.
+ */
+export declare const ConversationOwnerSchema: GenMessage<ConversationOwner>;
+
+/**
+ * 一件要送到业主手里的产物：project-svc 的登记 id + 产物类型（数据值）+ 私有桶对象键。
+ * 生成侧不知用户是谁，所以键里没有身份；谁该收到由 owner 说。
+ *
+ * @generated from message ishome.design.v1.Deliverable
+ */
+export declare type Deliverable = Message<"ishome.design.v1.Deliverable"> & {
+  /**
+   * @generated from field: string artifact_id = 1;
+   */
+  artifactId: string;
+
+  /**
+   * 产物类型，数据值（如 vision_mood_image）；chat 只按它决定呈现顺序与措辞，不理解语义
+   *
+   * @generated from field: string artifact_type = 2;
+   */
+  artifactType: string;
+
+  /**
+   * 私有桶对象键（registries/object_keys.md）；渠道侧按键取桶再发
+   *
+   * @generated from field: string object_key = 3;
+   */
+  objectKey: string;
+
+  /**
+   * 随图一句说明（可空）。系统文案，归"发给业主的文案一律分条"那条规矩管
+   *
+   * @generated from field: string caption = 4;
+   */
+  caption: string;
+};
+
+/**
+ * Describes the message ishome.design.v1.Deliverable.
+ * Use `create(DeliverableSchema)` to create a new message.
+ */
+export declare const DeliverableSchema: GenMessage<Deliverable>;
+
+/**
+ * 生成没做出来时的说明（v0.3 §9 失败路径显式）：chat 依此对业主诚实告知，不静默。
+ *
+ * @generated from message ishome.design.v1.GenerationFailure
+ */
+export declare type GenerationFailure = Message<"ishome.design.v1.GenerationFailure"> & {
+  /**
+   * 失败码（数据值，如 plan-2d-render）；chat 不理解语义，只决定措辞
+   *
+   * @generated from field: string code = 1;
+   */
+  code: string;
+
+  /**
+   * @generated from field: string detail = 2;
+   */
+  detail: string;
+
+  /**
+   * 是哪类任务没做出来（数据值，如 vision_image）
+   *
+   * @generated from field: string task_type = 3;
+   */
+  taskType: string;
+};
+
+/**
+ * Describes the message ishome.design.v1.GenerationFailure.
+ * Use `create(GenerationFailureSchema)` to create a new message.
+ */
+export declare const GenerationFailureSchema: GenMessage<GenerationFailure>;
+
+/**
+ * @generated from message ishome.design.v1.PresentDeliverablesRequest
+ */
+export declare type PresentDeliverablesRequest = Message<"ishome.design.v1.PresentDeliverablesRequest"> & {
+  /**
+   * project-svc 铸的送达标识（ULID）；chat 用它派生出站幂等键
+   *
+   * @generated from field: string delivery_id = 1;
+   */
+  deliveryId: string;
+
+  /**
+   * @generated from field: string project_id = 2;
+   */
+  projectId: string;
+
+  /**
+   * @generated from field: ishome.design.v1.ConversationOwner owner = 3;
+   */
+  owner?: ConversationOwner | undefined;
+
+  /**
+   * @generated from field: repeated ishome.design.v1.Deliverable deliverables = 4;
+   */
+  deliverables: Deliverable[];
+
+  /**
+   * 有它＝这一次是"没做出来"的告知，deliverables 为空；没有它＝正常送达
+   *
+   * @generated from field: ishome.design.v1.GenerationFailure failure = 5;
+   */
+  failure?: GenerationFailure | undefined;
+};
+
+/**
+ * Describes the message ishome.design.v1.PresentDeliverablesRequest.
+ * Use `create(PresentDeliverablesRequestSchema)` to create a new message.
+ */
+export declare const PresentDeliverablesRequestSchema: GenMessage<PresentDeliverablesRequest>;
+
+/**
+ * @generated from message ishome.design.v1.PresentDeliverablesResponse
+ */
+export declare type PresentDeliverablesResponse = Message<"ishome.design.v1.PresentDeliverablesResponse"> & {
+  /**
+   * 这一次是否真的发出去了（重投命中幂等时为 false）
+   *
+   * @generated from field: bool delivered = 1;
+   */
+  delivered: boolean;
+
+  /**
+   * 发出去的渠道消息 id（按 deliverables 顺序）
+   *
+   * @generated from field: repeated string message_ids = 2;
+   */
+  messageIds: string[];
+};
+
+/**
+ * Describes the message ishome.design.v1.PresentDeliverablesResponse.
+ * Use `create(PresentDeliverablesResponseSchema)` to create a new message.
+ */
+export declare const PresentDeliverablesResponseSchema: GenMessage<PresentDeliverablesResponse>;
+
+/**
  * @generated from enum ishome.design.v1.ConfirmationAction
  */
 export enum ConfirmationAction {
@@ -323,6 +491,19 @@ export declare const DesignService: GenService<{
     methodKind: "unary";
     input: typeof ListProjectsRequestSchema;
     output: typeof ListProjectsResponseSchema;
+  },
+  /**
+   * 产物呈现（2026-09-04 新增，只增不改）：project-svc 登记完一批该送到业主手里的产物后调用；
+   * chat-svc 经 channel-svc 把产物发进聊天线程，随后说明按什么假设做的（chat 定投递策略）。
+   * 链路单向的最后一跳：project 判定 → 事件（outbox）→ 本 rpc → chat 呈现；chat 不判里程碑。
+   * 幂等：delivery_id 由 project-svc 铸，chat 用它派生出站幂等键——重投不会在聊天线程里发两遍。
+   *
+   * @generated from rpc ishome.design.v1.DesignService.PresentDeliverables
+   */
+  presentDeliverables: {
+    methodKind: "unary";
+    input: typeof PresentDeliverablesRequestSchema;
+    output: typeof PresentDeliverablesResponseSchema;
   },
 }>;
 
